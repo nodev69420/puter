@@ -1,0 +1,43 @@
+[window]
+dynamic_title = true
+
+[font]
+size = 14.0
+
+[font.bold]
+family = "JetBrainsMono Nerd Font Mono"
+style = "Bold"
+
+[font.bold_italic]
+family = "JetBrainsMono Nerd Font Mono"
+style = "Bold Italic"
+
+[font.italic]
+family = "JetBrainsMono Nerd Font Mono"
+style = "Italic"
+
+[font.normal]
+family = "JetBrainsMono Nerd Font Mono"
+style = "Regular"
+
+[colors]
+
+[colors.primary]
+foreground = "#ffffff"
+background = "#000000"
+
+[colors.normal]
+black = "#000000"
+red = "#ff4040"
+green = "#40ff40"
+yellow = "#ffff40"
+blue = "#4040ff"
+magenta = "#ff40ff"
+cyan = "#40ffff"
+white = "#ffffff"
+
+[cursor]
+style = { shape = "Block", blinking = "Always" }
+blink_interval = 250
+blink_timeout = 0
+
