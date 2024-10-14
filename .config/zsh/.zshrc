@@ -5,6 +5,7 @@ alias cls="tput reset"
 alias ls="ls --color=auto"
 alias ll="ls -lah"
 alias grep="grep --colour=auto"
+alias tmux="tmux -2"
 autoload -U compinit
 zstyle ":completion:*" menu select
 zmodload zsh/complist
@@ -20,7 +21,10 @@ bindkey -v "^?" backward-delete-char
 function zle-keymap-select {
 	if [[ ${KEYMAP} == vicmd ]] || [[ $1 = "block" ]]; then
 		echo -ne "\e[1 q"
-	elif [[ ${KEYMAP} == main ]] || [[ ${KEYMAP} == viins ]] || [[ ${KEYMAP} = "" ]] || [[ $1 = "beam" ]]; then
+	elif [[ ${KEYMAP} == main ]] ||
+		[[ ${KEYMAP} == viins ]] ||
+		[[ ${KEYMAP} = "" ]] ||
+		[[ $1 = "beam" ]]; then
 		echo -ne "\e[5 q"
 	fi
 }

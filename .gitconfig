@@ -1,0 +1,5 @@
+[user]
+	name = adam
+	email = nodev1@proton.me
+[init]
+	defaultBranch = master

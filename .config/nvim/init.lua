@@ -38,9 +38,10 @@ vim.opt.signcolumn = "yes"
 vim.opt.colorcolumn = "80"
 vim.opt.updatetime = 50
 vim.lsp.set_log_level("off")
+
+vim.g.makeprg = "zig build run"
+
 require("lazy").setup({
-	-- Folke
-	"folke/which-key.nvim",
 	{
 		"folke/neoconf.nvim",
 		cmd = "Neoconf"
@@ -496,9 +497,9 @@ vim.keymap.set("n", "<leader>m9", function()
 	require("harpoon.ui").nav_file(9)
 end)
 vim.keymap.set("n", "<C-c><C-l>", function()
-	--vim.cmd[[wa]] vim.cmd[[make]]
+	vim.cmd[[wa]] vim.cmd[[make]]
 	--vim.cmd[[wa]] vim.cmd[[CMakeBuild]]
-	vim.cmd[[wa]] vim.cmd[[Zig build run]]
+	--vim.cmd[[wa]] vim.cmd[[Zig build run]]
 end)
 vim.keymap.set("n", "<C-c><C-r>", function() vim.cmd[[CMakeRun]] end)
 vim.keymap.set("n", "<leader>qq", function() vim.cmd[[copen]] end)

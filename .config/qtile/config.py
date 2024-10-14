@@ -76,16 +76,6 @@ keys = [
         lazy.spawncmd(),
         desc="Spawn a command using a prompt widget"
     ),
-    Key(
-        [mod, "shift"],
-        "z",
-        lazy.widget["pomodoro"].toggle_active()
-    ),
-    Key(
-        [mod],
-        "z",
-        lazy.widget["pomodoro"].toggle_break()
-    ),
 ]
 for vt in range(1, 8):
     keys.append(
@@ -139,7 +129,7 @@ layouts = [
 ]
 widget_defaults = dict(
     font="JetBrainsMono Nerd Font Mono",
-    fontsize=19,
+    fontsize=18,
     padding=0,
 )
 extension_defaults = widget_defaults.copy()
@@ -151,36 +141,35 @@ screens = [
             [
                 widget.Spacer(length=1),
                 widget.CurrentLayoutIcon(),
+                widget.Spacer(length=8),
                 widget.GroupBox(
                     highlight_method="line",
                     highlight_color=[
                         "000000",
                         "000000"
-                    ]
+                    ],
+                    this_current_screen_border="f0f0f0",
                 ),
+                widget.Spacer(length=8),
                 widget.Prompt(),
-                widget.WindowName(
-                    # background="404040"
-                ),
+                widget.Spacer(length=8),
+                widget.WindowName(),
                 widget.Chord(
                     chords_colors={
                         "launch": ("#ff0000", "#ffffff"),
                     },
                     name_transform=lambda name: name.upper(),
                 ),
-                widget.Spacer(length=14),
-                widget.Cmus(
-                    width=256 + 128,
-                    scroll=True,
-                    scroll_delay=0,
-                    scroll_step=1,
-                ),
-                widget.Spacer(length=14),
+                widget.Spacer(length=8),
                 widget.Systray(),
-                widget.Spacer(length=14),
-                widget.Clock(format="%Y-%m-%d %a [%H:%M:%S]"),
+                widget.Spacer(length=8),
+                widget.Clock(
+                    format="%Y-%m-%d %a [%H:%M:%S]",
+                    padding=14,
+                ),
             ],
-            28,
+            26,
+            opacity=1,
         ),
     ),
 ]
