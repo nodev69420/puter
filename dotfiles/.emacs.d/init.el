@@ -9,6 +9,8 @@
 (setq-default indent-tabs-mode nil)
 (setq-default cursor-in-non-selected-windows nil)
 
+;; (set-frame-parameter nil 'alpha-background 100)
+
 (defalias 'yes-or-no-p 'y-or-n-p)
 (setq vc-follow-symlinks t)
 
@@ -354,6 +356,7 @@
 (use-package wgsl-mode)
 (use-package cmake-mode)
 (use-package sxhkdrc-mode)
+(use-package i3wm-config-mode)
 ;; (use-package lua-mode)
 
 (use-package hydra)

@@ -1,9 +1,14 @@
 * Portable Puter
-Contains config contents within:
+Contains config contents and a collection of other computer conservables to cache.
 
-- Emac
-- Neovim
-- Bashrc
+** Configs
 - Alacritty
+- Bashrc
+- Emac
 - GDB
 - Git
+- Neovim
+- Rofi
+
+** Additional Items
+- Wallpapers
