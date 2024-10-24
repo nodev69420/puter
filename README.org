@@ -1,0 +1,9 @@
+* Portable Puter
+Contains config contents within:
+
+- Emac
+- Neovim
+- Bashrc
+- Alacritty
+- GDB
+- Git
