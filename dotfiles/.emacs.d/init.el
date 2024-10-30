@@ -76,7 +76,7 @@
 
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
-(defun adam/xwindows-setup ()
+(defun adam/enable-fast-keys ()
   (interactive)
   (shell-command-to-string "xset r rate 200 80"))
 
@@ -171,8 +171,10 @@
 
 (use-package doom-themes
   :config
-  (setq doom-themes-enable-bold t
-        doom-themes-enable-italic nil)
+  (setq doom-themes-enable-bold t)
+  (setq doom-themes-enable-italic nil)
+  (setq doom-winter-is-coming-no-italics t)
+  (setq doom-winter-is-coming-brighter-comments t)
   (load-theme 'doom-winter-is-coming-dark-blue t))
 
 (use-package doom-modeline
@@ -439,34 +441,10 @@
 (use-package magit)
 (use-package forge)
 
-;; (use-package exwm
-;;   :config
-;;   (setq exwm-workspace-number 4)
-;;   (add-hook 'exwm-update-class-hook
-;;             (lambda () (exwm-workspace-rename-buffer exwm-class-name)))
-;;   (setq exwm-input-global-keys
-;;         `(([?\s-r] . exwm-reset)
-;;           ([?\s-q] . exwm-restart)
-;;           ([?\s-w] . exwm-workspace-switch)
-;;           ([?\s-p] . (lambda (cmd)
-;;                        (interactive (list (read-shell-command "$ ")))
-;;                        (start-process-shell-command cmd nil cmd)))
-;;           ,@(mapcar (lambda (i)
-;;                       `(,(kbd (format "s-%d" i)) .
-;;                         (lambda ()
-;;                           (interactive)
-;;                           (exwm-workspace-switch-create ,i))))
-;;                     (number-sequence 0 9))))
-;;   (exwm-init)
-;;   (exwm-randr-mode))
-
-;; Simpc Mode
-;; (progn
-;;   (load-file "~/.emacs.d/local/simpc-mode/simpc-mode.el")
-;;   (add-to-list 'auto-mode-alist '("\\.[hc]\\(pp\\)?\\'" . simpc-mode))
-;;   ;; (add-to-list 'tree-sitter-major-mode-language-alist '(simpc-mode . c)))
-;;   (add-to-list 'lsp-language-id-configuration '(simpc-mode . "cpp"))
-;;   (add-hook 'simpc-mode-hook 'lsp-mode))
+(use-package cc-mode
+  :config
+  (add-hook 'c-mode-hook 'lsp-mode)
+  (add-hook 'c++-mode-hook 'lsp-mode))
 
 (define-minor-mode adam-mode
   "Adam global mode for Adam based sheringans!"

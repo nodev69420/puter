@@ -7,7 +7,6 @@ Contains config contents and a collection of other computer conservables to cach
 - Emac
 - GDB
 - Git
-- Neovim
 - Rofi
 
 ** Additional Items
