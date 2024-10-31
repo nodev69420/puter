@@ -7,7 +7,9 @@ Contains config contents and a collection of other computer conservables to cach
 - Emac
 - GDB
 - Git
+- i3 Config
 - Rofi
+- Xinitrc
 
 ** Additional Items
 - Wallpapers

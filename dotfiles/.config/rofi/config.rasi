@@ -4,6 +4,6 @@ configuration {
   drun-display-format: "{icon} {name}";
   font: "JetBrainsMonoNerdFont 14";
   modi: "window,run,drun";
-  show-icons: true;
+  show-icons: false;
 }
 @theme "solarized_alternate"

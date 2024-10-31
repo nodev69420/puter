@@ -173,9 +173,10 @@
   :config
   (setq doom-themes-enable-bold t)
   (setq doom-themes-enable-italic nil)
-  (setq doom-winter-is-coming-no-italics t)
-  (setq doom-winter-is-coming-brighter-comments t)
-  (load-theme 'doom-winter-is-coming-dark-blue t))
+  (load-theme 'doom-homage-black t))
+  ;; (setq doom-winter-is-coming-no-italics t)
+  ;; (setq doom-winter-is-coming-brighter-comments t)
+  ;; (load-theme 'doom-winter-is-coming-dark-blue t))
 
 (use-package doom-modeline
   :init (doom-modeline-mode 1)
