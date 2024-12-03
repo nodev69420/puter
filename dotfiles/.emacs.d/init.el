@@ -6,8 +6,11 @@
 (menu-bar-mode -1)
 (setq visible-bell nil)
 (column-number-mode 1)
-(setq-default indent-tabs-mode nil)
 (setq-default cursor-in-non-selected-windows nil)
+
+(setq-default tab-width 4)
+(setq-default c-basic-offset 4)
+(setq-default indent-tabs-mode nil)
 
 ;; (set-frame-parameter nil 'alpha-background 100)
 
@@ -281,8 +284,8 @@
                :wk "Command Project")
     "cn" '((lambda ()
                (interactive)
-               (let ((compile-command ""))
-                 (call-interactively #'compile)))
+               (setq compile-command "")
+               (call-interactively #'compile))
            :wk "Command New")
     "r" '(:ignore t :wk "Reload")
     "rc" '(adam/reload-init-file :wk "Reload Config")))
@@ -348,19 +351,35 @@
   (company-minimum-prefix-length 1)
   (company-idle-delay 0.0))
 
+;; (use-package rust-mode
+;;   :config
+;;   (add-hook 'rust-mode-hook 'lsp-mode))
+
 (use-package zig-mode
   :config
   (add-hook 'zig-mode-hook 'lsp-mode)
   (add-hook 'zig-mode-hook
             #'(lambda ()(interactive)(zig-format-on-save-mode -1))))
 
-(use-package gdscript-mode)
 (use-package glsl-mode)
 (use-package wgsl-mode)
 (use-package cmake-mode)
 (use-package sxhkdrc-mode)
 (use-package i3wm-config-mode)
-;; (use-package lua-mode)
+(use-package lua-mode
+  :config
+  (add-to-list 'auto-mode-alist '("\\.script\\'" . lua-mode)))
+
+(use-package sly
+  :config
+  (setq inferior-lisp-program "/bin/sbcl"))
+;; (use-package sly-quicklisp)
+(use-package fennel-mode)
+
+(use-package gdscript-mode
+  :config
+  (add-hook 'gdscript-mode-hook 'lsp-mode)
+  (setq gdscript-godot-executable "/bin/godot/godot"))
 
 (use-package hydra)
 
@@ -394,6 +413,7 @@
           ("mp4" . "mpv")
           ("webm" . "mpv")
           ("xcf" . "gimp")
+          ("pdf" . "firefox")
           ("kra" . "krita")
           ("blend" . "blender"))))
 
@@ -413,21 +433,24 @@
   :config
   (eshell-syntax-highlighting-global-mode 1))
 
-(use-package pdf-tools
-  :commands (pdf-loader-install)
-  :mode "\\.pdf\\'"
-  :bind (:map pdf-view-mode-map
-              ("j" . pdf-view-next-line-or-next-page)
-              ("k" . pdf-view-previous-line-or-previous-page)
-              ("C-=" . pdf-view-enlarge)
-              ("C--" . pdf-view-shrink))
-  :init (pdf-loader-install)
-  :config
-  (add-to-list 'revert-without-query ".pdf")
-  (add-hook 'pdf-view-mode-hook
-            #'(lambda () (interactive) (display-line-numbers-mode -1))))
+;; (use-package pdf-tools
+;;   :commands (pdf-loader-install)
+;;   :mode "\\.pdf\\'"
+;;   :bind (:map pdf-view-mode-map
+;;               ("j" . pdf-view-next-line-or-next-page)
+;;               ("k" . pdf-view-previous-line-or-previous-page)
+;;               ("C-=" . pdf-view-enlarge)
+;;               ("C--" . pdf-view-shrink))
+;;   :init (pdf-loader-install)
+;;   :config
+;;   (add-to-list 'revert-without-query ".pdf")
+;;   (add-hook 'pdf-view-mode-hook
+;;             #'(lambda () (interactive) (display-line-numbers-mode -1))))
 
-(use-package nov)
+;; (use-package nov)
+
+;; (load-file "~/.emacs.d/lib/odin-mode/odin-mode.el")
+;; (load-file "~/.emacs.d/lib/c3-mode.el")
 
 (use-package helpful
   :custom

@@ -8,6 +8,9 @@ Contains config contents and a collection of other computer conservables to cach
 - GDB
 - Git
 - i3 Config
+- i3 Status
+- Picom
+- QTile
 - Rofi
 - Xinitrc
 
