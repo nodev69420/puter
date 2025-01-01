@@ -68,7 +68,7 @@ for i in groups:
             Key(
                 [mod, "shift"],
                 i.name,
-                lazy.window.togroup(i.name, switch_group=True),
+                lazy.window.togroup(i.name, switch_group=False),
                 desc=f"Switch to & move focused window to group {i.name}",
             ),
         ]
@@ -76,7 +76,7 @@ for i in groups:
 
 layouts = [
     layout.Max(),
-    layout.Columns(border_focus_stack=["#d75f5f", "#8f3d3d"], border_width=1),
+    layout.Columns(border_width=0),
     # layout.Stack(num_stacks=2),
     # layout.Bsp(),
     # layout.Matrix(),
@@ -104,19 +104,14 @@ screens = [
                 widget.GroupBox(
                     highlight_method='text'
                 ),
-                widget.Prompt(),
-                widget.WindowName(),
-                widget.Chord(
-                    chords_colors={
-                        "launch": ("#ff0000", "#ffffff"),
-                    },
-                    name_transform=lambda name: name.upper(),
-                ),
+                widget.WindowTabs(),
                 widget.Systray(),
-                widget.Clock(format="%Y-%m-%d %a %I:%M %p"),
+                widget.Clock(format="%d-%m-%Y %a %H:%M:%S"),
             ],
             24,
         ),
+        wallpaper="~/puter/pape/pape.jpg",
+        wallpaper_mode="fill"
     ),
 ]
 
@@ -141,7 +136,8 @@ floating_layout = layout.Floating(
         Match(wm_class="ssh-askpass"),
         Match(title="branchdialog"),
         Match(title="pinentry"),
-    ]
+    ],
+    border_width=0,
 )
 auto_fullscreen = True
 focus_on_window_activation = "smart"

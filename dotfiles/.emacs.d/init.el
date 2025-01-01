@@ -12,7 +12,8 @@
 (setq-default c-basic-offset 4)
 (setq-default indent-tabs-mode nil)
 
-;; (set-frame-parameter nil 'alpha-background 100)
+;; Transparency
+;; (set-frame-parameter nil 'alpha-background 95)
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 (setq vc-follow-symlinks t)
@@ -20,13 +21,14 @@
 (global-display-line-numbers-mode 1)
 (set-default 'truncate-lines t)
 
+(global-prettify-symbols-mode 1)
+
 (setq blink-cursor-interval 0.15)
 (setq blink-cursor-blinks -1)
 (setq mouse-autoselect-window t)
 (setq focus-follows-mouse t)
 (global-hl-line-mode)
 
-;; (setq split-width-threshold 1)
 (setq display-line-numbers-mode 1)
 (setq display-line-numbers-type 'relative)
 (setq browse-url-browser-function #'browse-url-firefox)
@@ -52,14 +54,17 @@
 (setq gc-cons-threshold (* 100 1024 1024))
 
 (defun adam/qoutize-string (str)
+  "Surround a string in \"\" qoutes."
   (concat "\"" str "\""))
 
 (defvar adam/font "JetBrainsMono Nerd Font Mono")
 
 (defun adam/set-font (name)
+  "Set the font globally."
   (setq adam/font name))
 
 (defun adam/set-font-size (font-size)
+  "Set the font size globally."
   (let ((font-height (* font-size 10)))
     (set-face-attribute
      'default nil
@@ -80,6 +85,7 @@
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
 (defun adam/enable-fast-keys ()
+  "Enable fast typing."
   (interactive)
   (shell-command-to-string "xset r rate 200 80"))
 
@@ -106,7 +112,7 @@
 
 (defun adam/display-startup-time ()
   "Display emacs starting time."
-  (message "Emacs loaded in: %s, with: %d, gc collects."
+  (message "Emacs loaded in: %s, gc collects: %d."
            (format "%.2f seconds"
                    (float-time
                     (time-subtract after-init-time before-init-time)))
@@ -317,13 +323,6 @@
   :config
   (setq org-edit-src-content-indentation 0))
 
-;; (use-package tree-sitter
-;;   :config
-;;   (global-tree-sitter-mode)
-;;   (add-hook 'tree-sitter-mode-hook #'tree-sitter-hl-mode))
-
-;; (use-package tree-sitter-langs)
-
 (use-package lsp-mode
   :init
   (setq lsp-log-io nil)
@@ -351,29 +350,21 @@
   (company-minimum-prefix-length 1)
   (company-idle-delay 0.0))
 
-;; (use-package rust-mode
+;; (use-package zig-mode
 ;;   :config
-;;   (add-hook 'rust-mode-hook 'lsp-mode))
-
-(use-package zig-mode
-  :config
-  (add-hook 'zig-mode-hook 'lsp-mode)
-  (add-hook 'zig-mode-hook
-            #'(lambda ()(interactive)(zig-format-on-save-mode -1))))
+;;   (add-hook 'zig-mode-hook 'lsp-mode)
+;;   (add-hook 'zig-mode-hook
+;;             #'(lambda ()(interactive)(zig-format-on-save-mode -1))))
 
 (use-package glsl-mode)
-(use-package wgsl-mode)
 (use-package cmake-mode)
-(use-package sxhkdrc-mode)
 (use-package i3wm-config-mode)
-(use-package lua-mode
-  :config
-  (add-to-list 'auto-mode-alist '("\\.script\\'" . lua-mode)))
+(use-package lua-mode)
 
 (use-package sly
   :config
   (setq inferior-lisp-program "/bin/sbcl"))
-;; (use-package sly-quicklisp)
+
 (use-package fennel-mode)
 
 (use-package gdscript-mode
@@ -433,25 +424,6 @@
   :config
   (eshell-syntax-highlighting-global-mode 1))
 
-;; (use-package pdf-tools
-;;   :commands (pdf-loader-install)
-;;   :mode "\\.pdf\\'"
-;;   :bind (:map pdf-view-mode-map
-;;               ("j" . pdf-view-next-line-or-next-page)
-;;               ("k" . pdf-view-previous-line-or-previous-page)
-;;               ("C-=" . pdf-view-enlarge)
-;;               ("C--" . pdf-view-shrink))
-;;   :init (pdf-loader-install)
-;;   :config
-;;   (add-to-list 'revert-without-query ".pdf")
-;;   (add-hook 'pdf-view-mode-hook
-;;             #'(lambda () (interactive) (display-line-numbers-mode -1))))
-
-;; (use-package nov)
-
-;; (load-file "~/.emacs.d/lib/odin-mode/odin-mode.el")
-;; (load-file "~/.emacs.d/lib/c3-mode.el")
-
 (use-package helpful
   :custom
   (counsel-describe-function-function #'helpful-callable)
@@ -469,6 +441,9 @@
   :config
   (add-hook 'c-mode-hook 'lsp-mode)
   (add-hook 'c++-mode-hook 'lsp-mode))
+
+;; Email
+
 
 (define-minor-mode adam-mode
   "Adam global mode for Adam based sheringans!"
