@@ -57,30 +57,35 @@
   "Surround a string in \"\" qoutes."
   (concat "\"" str "\""))
 
-(defvar adam/font "JetBrainsMono Nerd Font Mono")
-
-(defun adam/set-font (name)
-  "Set the font globally."
-  (setq adam/font name))
-
-(defun adam/set-font-size (font-size)
-  "Set the font size globally."
+(defun adam/set-font (font-name font-size)
+  "Set frame font and size."
   (let ((font-height (* font-size 10)))
     (set-face-attribute
      'default nil
-     :font adam/font :height font-height)
+     :font font-name :height font-height)
     (set-face-attribute
      'variable-pitch nil
-     :font adam/font :height font-height)
+     :font font-name :height font-height)
     (set-face-attribute
      'fixed-pitch nil
-     :font adam/font :height font-height))
-  (let ((font-frame (concat adam/font "-" (number-to-string font-size))))
+     :font font-name :height font-height))
+  (let ((font-frame (concat font-name "-" (number-to-string font-size))))
     (add-to-list
      'default-frame-alist
      `(font . ,font-frame))))
 
-(adam/set-font-size 13)
+(defun adam/set-frame-default-params ()
+  "Set all frame params"
+  (adam/set-font "JetBrainsMono Nerd Font Mono" 13))
+
+;; Emacs daemon-mode doesn't load frame params correctly.
+(if (daemonp)
+      (add-hook 'after-make-frame-functions
+                (lambda (frame)
+                  (with-selected-frame frame
+                    (adam/set-frame-default-params))))
+  (adam/set-frame-default-params))
+
 
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
@@ -99,16 +104,41 @@
   (interactive)
   (load-file user-init-file))
 
+(defun adam/switch-buffer ()
+  "Switch to buffer command."
+  (interactive)
+  (call-interactively #'counsel-switch-buffer))
+
+(defun adam/ibuffer ()
+  "Interactive buffer menu."
+  (interactive)
+  (call-interactively #'ibuffer))
+
+(defun adam/find-file ()
+  "Find file."
+  (interactive)
+  (call-interactively #'counsel-find-file))
+
+(defun adam/imenu ()
+  "Interactive menu."
+  (interactive)
+  (call-interactively #'counsel-imenu))
+
+(defun adam/M-x ()
+  "Meta X."
+  (interactive)
+  (call-interactively #'counsel-M-x))
+
 (defun adam/fuzzy-find ()
   "Fuzzy find based on the contents of the current buffer."
   (interactive)
   (cond ((eq major-mode 'dired-mode)
-         (call-interactively #'counsel-find-file))
-        ((eq major-mode 'ibuffer-mode)
-         (call-interactively #'counsel-ibuffer))
+         (call-interactively #'adam/find-file))
         ((eq major-mode 'eshell-mode)
-         (call-interactively #'counsel-find-file))
-        (t (call-interactively #'counsel-imenu))))
+         (call-interactively #'adam/find-file))
+        ((eq major-mode 'ibuffer-mode)
+         (call-interactively #'adam/switch-buffer))
+        (t (call-interactively #'adam/imenu))))
 
 (defun adam/display-startup-time ()
   "Display emacs starting time."
@@ -131,40 +161,45 @@
 (require 'use-package)
 
 (setq use-package-always-ensure t)
+
+;; (use-package perspective
+;;   :init
+;;   (persp-mode 1)
+;;   :config
+;;   (setq persp-mode-prefix-key (kbd "C-x x")))
+
 (use-package counsel
   :init (counsel-mode 1)
-  :bind (("M-x" . counsel-M-x)
-         ("C-x b" . counsel-ibuffer)
-         ("C-x C-f" . counsel-find-file)
-         :map minibuffer-local-map
+  :bind (:map minibuffer-local-map
          ("C-r" . 'counsel-minibuffer-history))
   :config
-  (counsel-mode t)
-  (use-package swiper)
-  (use-package flx)
-  (use-package ivy
-    :bind (("C-s" . swiper)
-           :map ivy-minibuffer-map
-           ("TAB" . ivy-alt-done)
-           ("C-l" . ivy-alt-done)
-           ("C-j" . ivy-next-line)
-           ("C-k" . ivy-previous-line)
-           :map ivy-switch-buffer-map
-           ("C-k" . ivy-previous-line)
-           ("C-l" . ivy-done)
-           ("C-d" . ivy-switch-buffer-kill)
-           :map ivy-reverse-i-search-map
-           ("C-k" . ivy-previous-line)
-           ("C-d" . ivy-reverse-i-search-kill))
-    :custom
-    (setq ivy-use-virtual-buffers t)
-    (setq ivy-count-format "(%d/%d) ")
-    (setq enable-recursive-minibuffers t)
-    :config
-    (use-package org-ivy-search)
-    (ivy-mode 1)
-    (setq ivy-height 20)
-    (setq ivy-re-builders-alist '((t . ivy--regex-fuzzy)))))
+  (counsel-mode t))
+
+(use-package swiper)
+(use-package flx)
+(use-package ivy
+  :bind (("C-s" . swiper)
+         :map ivy-minibuffer-map
+         ("TAB" . ivy-alt-done)
+         ("C-l" . ivy-alt-done)
+         ("C-j" . ivy-next-line)
+         ("C-k" . ivy-previous-line)
+         :map ivy-switch-buffer-map
+         ("C-k" . ivy-previous-line)
+         ("C-l" . ivy-done)
+         ("C-d" . ivy-switch-buffer-kill)
+         :map ivy-reverse-i-search-map
+         ("C-k" . ivy-previous-line)
+         ("C-d" . ivy-reverse-i-search-kill))
+  :custom
+  (setq ivy-use-virtual-buffers t)
+  (setq ivy-count-format "(%d/%d) ")
+  (setq enable-recursive-minibuffers t)
+  :config
+  (use-package org-ivy-search)
+  (ivy-mode 1)
+  (setq ivy-height 20)
+  (setq ivy-re-builders-alist '((t . ivy--regex-fuzzy))))
 
 
 (use-package ivy-rich
@@ -233,68 +268,6 @@
   :config
   (evil-collection-init))
 
-(use-package general
-  :config
-  (general-evil-setup)
-  (general-create-definer adam/leader-keys
-    :states '(normal insert visual emacs)
-    :keymaps 'override
-    :prefix "SPC"
-    :global-prefix "C-SPC")
-  (adam/leader-keys
-    "s" '(:ignore t :wk "Search")
-    "ss" '(swiper :wk "Search Swiper")
-    "SPC" '(counsel-M-x :wk "M-x")
-    "f" '(:ignore t :wk "Find")
-    "fc" '(adam/goto-init-file :wk "Find Config")
-    "ff" '(adam/fuzzy-find :wk "Find Fuzzy-Contextual")
-    "fa" '(lsp-ivy-workspace-symbol :wk "Find LSP Symbol")
-    "f." '(counsel-find-file :wk "Find File")
-    "gg" '(magit :wk "Magit")
-    "b" '(:ignore t :wk "Buffer")
-    "bb" '(counsel-ibuffer :wk "Buffer Switch")
-    "bm" '(ibuffer :wk "Buffer Menu")
-    "bx" '(kill-this-buffer :wk "Buffer Kill")
-    "e" '(:ignore t :wk "Eval")
-    "ee" '(eval-expression :wk "Eval Expression")
-    "eb" '(eval-buffer :wk "Eval Buffer")
-    "ex" '(eval-last-sexp :wk "Eval Last Sexpr")
-    "h" '(:ignore t :wk "Help")
-    "hf" '(counsel-describe-function :wk "Help Function")
-    "hv" '(counsel-describe-variable :wk "Help Variable")
-    "l" '(:ignore t :wk "LSP")
-    "lr" '(lsp-rename :wk "LSP Rename")
-    "lf" '(lsp-find-references :wk "LSP Find References")
-    "ld" '(lsp-treemacs-errors-list :wk "LSP Diagnostics")
-    "w" '(:ignore t :wk "Window")
-    "w1" '(delete-other-windows :wk "Window Solo")
-    "wn" '(evil-window-split :wk "Window Split Horizontal")
-    "wv" '(evil-window-vsplit :wk "Window Split Vertical")
-    "ww" '(evil-window-next :wk "Window Next")
-    "wc" '(evil-window-delete :wk "Window Close")
-    "wx" '(kill-buffer-and-window :wk "Window Kill and Close")
-    "wh" '(evil-window-left :wk "Window Left")
-    "wj" '(evil-window-down :wk "Window Down")
-    "wk" '(evil-window-up :wk "Window Up")
-    "wl" '(evil-window-right :wk "Window Right")
-    "c" '(:ignore t :wk "Command")
-    "ce" '(eshell :wk "Command Eshell")
-    "cc" '((lambda ()
-               (interactive)
-               (call-interactively #'compile))
-           :wk "Command Current")
-    "cp" '((lambda ()
-               (interactive)
-               (when (projectile-project-p)
-                   (call-interactively #'projectile-compile-project)))
-               :wk "Command Project")
-    "cn" '((lambda ()
-               (interactive)
-               (setq compile-command "")
-               (call-interactively #'compile))
-           :wk "Command New")
-    "r" '(:ignore t :wk "Reload")
-    "rc" '(adam/reload-init-file :wk "Reload Config")))
 
 (use-package projectile
   :config (projectile-mode)
@@ -322,6 +295,8 @@
 (use-package org
   :config
   (setq org-edit-src-content-indentation 0))
+
+(use-package flycheck)
 
 (use-package lsp-mode
   :init
@@ -361,6 +336,9 @@
 (use-package i3wm-config-mode)
 (use-package lua-mode)
 
+(use-package geiser)
+(use-package geiser-gambit)
+
 (use-package sly
   :config
   (setq inferior-lisp-program "/bin/sbcl"))
@@ -370,7 +348,9 @@
 (use-package gdscript-mode
   :config
   (add-hook 'gdscript-mode-hook 'lsp-mode)
-  (setq gdscript-godot-executable "/bin/godot/godot"))
+  (setq gdscript-godot-executable "/bin/godot/godot")
+  (setq gdscript-use-tab-indents nil)
+  (setq gdscript-gdformat-save-and-format nil))
 
 (use-package hydra)
 
@@ -442,14 +422,142 @@
   (add-hook 'c-mode-hook 'lsp-mode)
   (add-hook 'c++-mode-hook 'lsp-mode))
 
-;; Email
+(use-package general
+  :config
+  (general-evil-setup)
+  (general-create-definer adam/leader-keys
+    :states '(normal insert visual emacs)
+    :keymaps 'override
+    :prefix "SPC"
+    :global-prefix "C-SPC")
+  (adam/leader-keys
+    "SPC" '(adam/M-x :wk "M-x")
 
+    "s" '(:ignore t :wk "Search")
+    "ss" '(swiper :wk "Search Swiper")
+
+    "f" '(:ignore t :wk "Find")
+    "fc" '(adam/goto-init-file :wk "Find Config")
+    "ff" '(adam/fuzzy-find :wk "Find Fuzzy-Contextual")
+    "fa" '(lsp-ivy-workspace-symbol :wk "Find LSP Symbol")
+    "f." '(adam/find-file :wk "Find File")
+
+    "gg" '(magit :wk "Magit")
+
+    "b" '(:ignore t :wk "Buffer")
+    "bb" '(adam/switch-buffer :wk "Buffer Switch")
+    "bm" '(adam/ibuffer :wk "Buffer Menu")
+    "bx" '(kill-this-buffer :wk "Buffer Kill")
+
+    "e" '(:ignore t :wk "Eval")
+    "ee" '(eval-expression :wk "Eval Expression")
+    "eb" '(eval-buffer :wk "Eval Buffer")
+    "ex" '(eval-last-sexp :wk "Eval Last Sexpr")
+
+    "h" '(:ignore t :wk "Help")
+    "hf" '(counsel-describe-function :wk "Help Function")
+    "hv" '(counsel-describe-variable :wk "Help Variable")
+
+    "l" '(:ignore t :wk "LSP")
+    "lr" '(lsp-rename :wk "LSP Rename")
+    "lf" '(lsp-find-references :wk "LSP Find References")
+    "ld" '(lsp-treemacs-errors-list :wk "LSP Diagnostics")
+
+    "p" '(:ignore t :wk "Perspective")
+    "pp" '(persp-switch :wk "Perspective Switch")
+    "px" '(persp-kill :wk "Perspective Kill")
+
+    "w" '(:ignore t :wk "Window")
+    "w1" '(delete-other-windows :wk "Window Solo")
+    "wn" '(evil-window-split :wk "Window Split Horizontal")
+    "wv" '(evil-window-vsplit :wk "Window Split Vertical")
+    "ww" '(evil-window-next :wk "Window Next")
+    "wc" '(evil-window-delete :wk "Window Close")
+    "wx" '(kill-buffer-and-window :wk "Window Kill and Close")
+    "wh" '(evil-window-left :wk "Window Left")
+    "wj" '(evil-window-down :wk "Window Down")
+    "wk" '(evil-window-up :wk "Window Up")
+    "wl" '(evil-window-right :wk "Window Right")
+
+    "c" '(:ignore t :wk "Command")
+    "ce" '(eshell :wk "Command Eshell")
+    "cc" '((lambda ()
+               (interactive)
+               (call-interactively #'compile))
+           :wk "Command Current")
+    "cp" '((lambda ()
+               (interactive)
+               (when (projectile-project-p)
+                   (call-interactively #'projectile-compile-project)))
+               :wk "Command Project")
+    "cn" '((lambda ()
+               (interactive)
+               (setq compile-command "")
+               (call-interactively #'compile))
+           :wk "Command New")
+
+    "r" '(:ignore t :wk "Reload")
+    "rc" '(adam/reload-init-file :wk "Reload Config")))
 
 (define-minor-mode adam-mode
   "Adam global mode for Adam based sheringans!"
   1
   :global t
   :group 'adam
-  :lighter " adam-mode")
+  :lighter " adam-mode"
+  :keymap (let ((map (make-sparse-keymap)))
+            (define-key map (kbd "M-x") 'adam/M-x)
+            (define-key map (kbd "C-x SPC") 'adam/M-x)
+            (define-key map (kbd "C-x j") 'adam/fuzzy-find)
+            (define-key map (kbd "C-x .") 'adam/find-file)
+            (define-key map (kbd "C-x ,") 'counsel-linux-app)
+            (define-key map (kbd "C-x b") 'adam/switch-buffer)
+            (define-key map (kbd "C-x C-b") 'adam/ibuffer)
+            
+            (define-key map (kbd "C-x k") 'kill-buffer)
+            (define-key map (kbd "C-x K") 'kill-buffer-and-window)
+
+            (define-key map (kbd "C-x w 1") 'delete-other-windows)
+            (define-key map (kbd "C-x w n") 'evil-window-split)
+            (define-key map (kbd "C-x w v") 'evil-window-vsplit)
+            (define-key map (kbd "C-x w w") 'evil-window-next)
+            (define-key map (kbd "C-x w k") 'evil-window-delete)
+            (define-key map (kbd "C-x w h") 'windmove-left)
+            (define-key map (kbd "C-x w j") 'windmove-down)
+            (define-key map (kbd "C-x w k") 'windmove-up)
+            (define-key map (kbd "C-x w l") 'windmove-right)
+
+            map))
+
+;; (use-package exwm
+;;   :config
+;;   (add-hook 'exwm-update-class-hook
+;;             #'(lambda () (exwm-workspace-rename-buffer exwm-class-name)))
+
+;;   (require 'exwm-randr)
+;;   (exwm-randr-enable)
+
+;;   ;; (exwm-systemtray 1)
+
+;;   (setq exwm-input-prefix-keys
+;;         '(?\C-x
+;;           ?\C-u
+;;           ?\C-h
+;;           ?\M-x
+;;           ?\M-&
+;;           ?\M-:))
+
+;;   (setq exwm-input-global-keys
+;;         `(([?\s-r] . exwm-reset)
+;;           ([?\s-h] . windmove-left)
+;;           ([?\s-j] . windmove-down)
+;;           ([?\s-k] . windmove-up)
+;;           ([?\s-l] . windmove-right)
+;;           ([?\s-&] . (lambda (command)
+;;                        (interactive (list (read-shell-command "$ ")))
+;;                        (start-process-shell-command command nil command)))
+;;           ([?\s-w] . exwm-workspace-switch)))
+
+;;   (exwm-enable))
 
 (load-file custom-file)

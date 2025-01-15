@@ -1,7 +1,7 @@
 [[ $- != *i* ]] && return
 export LSP_USE_PLISTS=true
-export EDITOR="emacs"
-export VISUAL="emacs"
+export EDITOR="emacsclient -c -a emacs"
+export VISUAL="emacsclient -c -a emacs"
 export TERMINAL="alacritty"
 export BROWSER="firefox"
 export DOTNET_CLI_TELEMETRY_OPTOUT=1
