@@ -1,3 +1,7 @@
+;;; package -- Summary
+;;; Commentary:
+;;; Code:
+
 (setq custom-file "~/.emacs.d/custom.el")
 (scroll-bar-mode -1)
 (tool-bar-mode -1)
@@ -29,15 +33,13 @@
 (setq focus-follows-mouse t)
 (global-hl-line-mode)
 
-(setq display-line-numbers-mode 1)
+(display-line-numbers-mode 1)
 (setq display-line-numbers-type 'relative)
 (setq browse-url-browser-function #'browse-url-firefox)
 
 (setq debug-on-error t)
 (setq edebug-all-forms t)
-(setq backtrace-depth 50)
 (setq message-log-max 16384)
-(setq log-max (expt 2 22))
 (setq auto-save-file-name-transforms `((".*" ,temporary-file-directory t)))
 
 (setq make-backup-files t)
@@ -48,17 +50,17 @@
 (setq backup-directory-alist '(("." . "~/.emacs.d/backup")))
 
 (electric-pair-mode 1)
-(setq compile-command "") 
+(setq compile-command "")
 
 (setq read-process-output-max (* 1024 1024))
 (setq gc-cons-threshold (* 100 1024 1024))
 
 (defun adam/qoutize-string (str)
-  "Surround a string in \"\" qoutes."
+  "Surround a string STR in \"\" qoutes."
   (concat "\"" str "\""))
 
 (defun adam/set-font (font-name font-size)
-  "Set frame font and size."
+  "Set frame font FONT-NAME and size FONT-SIZE."
   (let ((font-height (* font-size 10)))
     (set-face-attribute
      'default nil
@@ -75,7 +77,7 @@
      `(font . ,font-frame))))
 
 (defun adam/set-frame-default-params ()
-  "Set all frame params"
+  "Set all frame params."
   (adam/set-font "JetBrainsMono Nerd Font Mono" 13))
 
 ;; Emacs daemon-mode doesn't load frame params correctly.
@@ -100,7 +102,7 @@
   (find-file user-init-file))
 
 (defun adam/reload-init-file ()
-  "Reload emacs config."
+  "Reload Emacs config."
   (interactive)
   (load-file user-init-file))
 
@@ -141,7 +143,7 @@
         (t (call-interactively #'adam/imenu))))
 
 (defun adam/display-startup-time ()
-  "Display emacs starting time."
+  "Display Emacs starting time."
   (message "Emacs loaded in: %s, gc collects: %d."
            (format "%.2f seconds"
                    (float-time
@@ -296,7 +298,9 @@
   :config
   (setq org-edit-src-content-indentation 0))
 
-(use-package flycheck)
+(use-package flycheck
+  :config
+  (add-hook 'after-init-hook #'global-flycheck-mode))
 
 (use-package lsp-mode
   :init
@@ -325,16 +329,18 @@
   (company-minimum-prefix-length 1)
   (company-idle-delay 0.0))
 
-;; (use-package zig-mode
-;;   :config
-;;   (add-hook 'zig-mode-hook 'lsp-mode)
-;;   (add-hook 'zig-mode-hook
-;;             #'(lambda ()(interactive)(zig-format-on-save-mode -1))))
+(use-package zig-mode
+  :config
+  (add-hook 'zig-mode-hook 'lsp-mode)
+  (add-hook 'zig-mode-hook
+            #'(lambda ()(interactive)(zig-format-on-save-mode -1))))
 
 (use-package glsl-mode)
 (use-package cmake-mode)
 (use-package i3wm-config-mode)
 (use-package lua-mode)
+
+(use-package css-mode)
 
 (use-package geiser)
 (use-package geiser-gambit)
@@ -342,6 +348,9 @@
 (use-package sly
   :config
   (setq inferior-lisp-program "/bin/sbcl"))
+
+(use-package sly-asdf)
+(use-package sly-quicklisp)
 
 (use-package fennel-mode)
 
@@ -404,6 +413,8 @@
   :config
   (eshell-syntax-highlighting-global-mode 1))
 
+(use-package vterm)
+
 (use-package helpful
   :custom
   (counsel-describe-function-function #'helpful-callable)
@@ -461,7 +472,7 @@
     "l" '(:ignore t :wk "LSP")
     "lr" '(lsp-rename :wk "LSP Rename")
     "lf" '(lsp-find-references :wk "LSP Find References")
-    "ld" '(lsp-treemacs-errors-list :wk "LSP Diagnostics")
+    "ld" '(flycheck-list-errors :wk "LSP Errors")
 
     "p" '(:ignore t :wk "Perspective")
     "pp" '(persp-switch :wk "Perspective Switch")

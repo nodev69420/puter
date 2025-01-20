@@ -1,9 +1,54 @@
 configuration {
-  display-drun: "Run";
-  display-window: "Windows";
-  drun-display-format: "{icon} {name}";
-  font: "JetBrainsMonoNerdFont 14";
-  modi: "window,run,drun";
-  show-icons: false;
+    modes: "window,run,drun";
+    font: "JetBrainsMonoNerdFont 14";
 }
-@theme "solarized_alternate"
+
+* {
+    adam-selected: #40ff40;
+    adam-white: rgba(245, 245, 245, 100%);
+    adam-black: #000000;
+
+    red: var(adam-selected);
+    blue: var(adam-selected);
+    foreground: var(adam-white);
+    background: var(adam-black);
+    lightbg: var(adam-black);
+    lightfg: var(adam-selected);
+    active-foreground: var(adam-selected);
+
+    background-color: var(adam-black);
+    border-color: var(adam-white);
+    text-color: var(adam-white);
+}
+
+window {
+    padding: 4;
+    border: 1;
+    spacing: 0;
+    children: [mainbox];
+    orientation: horizontal;
+    location: center;
+    anchor: center;
+}
+
+mainbox {
+    children: [inputbar, message, listview];
+}
+
+listview {
+    lines: 16;
+}
+
+entry {
+    placeholder: "Enter Text...";
+    cursor: text;
+}
+
+element {
+    padding: 1px;
+    color: #ffffff;
+}
+
+textbox-prompt-colon {
+    str:        " >";
+}

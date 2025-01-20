@@ -23,7 +23,7 @@ style = "Regular"
 [colors]
 
 [colors.primary]
-foreground = "#ffffff"
+foreground = "#f5f5f5"
 background = "#000000"
 
 [colors.normal]
@@ -34,7 +34,7 @@ yellow = "#ffff40"
 blue = "#4040ff"
 magenta = "#ff40ff"
 cyan = "#40ffff"
-white = "#ffffff"
+white = "#f5f5f5"
 
 [cursor]
 style = { shape = "Block", blinking = "Always" }
