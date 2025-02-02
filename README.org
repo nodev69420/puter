@@ -27,5 +27,5 @@ Contains config contents and a collection of other computer conservables to cach
 - BigBlueTermNerdFont
 
 ** Resources
-[[https://www.nerdfonts.com]]
-https://github.com/supermariofps/hatsune-miku-windows-linux-cursors
+- [[https://www.nerdfonts.com]]
+- https://github.com/supermariofps/hatsune-miku-windows-linux-cursors
