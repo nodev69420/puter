@@ -1,4 +1,5 @@
 [[ $- != *i* ]] && return
+export PATH=${PATH}:~/puter/path
 export LSP_USE_PLISTS=true
 export EDITOR="emacsclient -c -a emacs"
 export VISUAL="emacsclient -c -a emacs"

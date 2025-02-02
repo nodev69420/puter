@@ -1,0 +1,8 @@
+#!/bin/sh
+
+if ["$#" != 1]; then
+    echo "only one argument expected!"
+    return 1
+fi
+
+mv "$1" ~/trash/

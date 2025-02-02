@@ -1,8 +1,8 @@
 general {
     colors = true
-    color_good = "#40FF40"
-    color_degraded = "#FFFF40"
-    color_bad = "#FF4040"
+    color_good = "#00F500"
+    color_degraded = "#F5F500"
+    color_bad = "#F50000"
     separator = "  "
     interval = 1
 }

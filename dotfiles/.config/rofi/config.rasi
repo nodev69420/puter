@@ -1,29 +1,33 @@
 configuration {
     modes: "window,run,drun";
-    font: "JetBrainsMonoNerdFont 14";
+    font: "BigBlueTermPlusNerdFont 14";
 }
 
 * {
-    adam-selected: #40ff40;
-    adam-white: rgba(245, 245, 245, 100%);
-    adam-black: #000000;
+    adam-selected: #DDDDDD;
+    adam-white: #DDDDDD;
+    adam-blue: #0000AA;
 
     red: var(adam-selected);
     blue: var(adam-selected);
     foreground: var(adam-white);
-    background: var(adam-black);
-    lightbg: var(adam-black);
+    background: var(adam-blue);
+    lightbg: var(adam-blue);
     lightfg: var(adam-selected);
     active-foreground: var(adam-selected);
 
-    background-color: var(adam-black);
+    background-color: var(adam-blue);
     border-color: var(adam-white);
     text-color: var(adam-white);
 }
 
+configuration {
+    show-icons: true;
+}
+
 window {
     padding: 4;
-    border: 1;
+    border: 6;
     spacing: 0;
     children: [mainbox];
     orientation: horizontal;
@@ -36,7 +40,7 @@ mainbox {
 }
 
 listview {
-    lines: 16;
+    lines: 24;
 }
 
 entry {
@@ -46,7 +50,6 @@ entry {
 
 element {
     padding: 1px;
-    color: #ffffff;
 }
 
 textbox-prompt-colon {

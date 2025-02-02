@@ -219,10 +219,11 @@
   :config
   (setq doom-themes-enable-bold t)
   (setq doom-themes-enable-italic nil)
-  ;; (load-theme 'doom-homage-black t))
   (setq doom-winter-is-coming-no-italics t)
   (setq doom-winter-is-coming-brighter-comments t)
-  (load-theme 'doom-winter-is-coming-dark-blue t))
+  (setq doom-ir-black-brighter-comments t))
+
+(use-package modus-themes)
 
 (use-package doom-modeline
   :init (doom-modeline-mode 1)
@@ -329,21 +330,9 @@
   (company-minimum-prefix-length 1)
   (company-idle-delay 0.0))
 
-(use-package zig-mode
-  :config
-  (add-hook 'zig-mode-hook 'lsp-mode)
-  (add-hook 'zig-mode-hook
-            #'(lambda ()(interactive)(zig-format-on-save-mode -1))))
-
-(use-package glsl-mode)
-(use-package cmake-mode)
 (use-package i3wm-config-mode)
-(use-package lua-mode)
 
 (use-package css-mode)
-
-(use-package geiser)
-(use-package geiser-gambit)
 
 (use-package sly
   :config
@@ -352,7 +341,15 @@
 (use-package sly-asdf)
 (use-package sly-quicklisp)
 
-(use-package fennel-mode)
+(use-package zig-mode
+  :config
+  (add-hook 'zig-mode-hook 'lsp-mode)
+  (add-hook 'zig-mode-hook
+            #'(lambda ()(interactive)(zig-format-on-save-mode -1))))
+
+(use-package rust-mode
+  :config
+  (add-hook 'rust-mode-hook 'lsp-mode))
 
 (use-package gdscript-mode
   :config
@@ -540,6 +537,7 @@
 
             map))
 
+
 ;; (use-package exwm
 ;;   :config
 ;;   (add-hook 'exwm-update-class-hook
@@ -570,5 +568,5 @@
 ;;           ([?\s-w] . exwm-workspace-switch)))
 
 ;;   (exwm-enable))
-
+(load-theme 'doom-winter-is-coming-dark-blue t)
 (load-file custom-file)
