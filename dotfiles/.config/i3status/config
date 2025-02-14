@@ -7,22 +7,29 @@ general {
     interval = 1
 }
 
+order += "cpu_usage"
 order += "memory"
-order += "disk /"
+order += "disk /home/"
 order += "tztime local"
 
-memory {
-    format = "[%used / %available]"
-    threshold_degraded = "1G"
-    format_degraded = "MEMORY < %available"
+cpu_usage {
+    # format = "CPU: 0 %cpu0 1 %cpu1"
+    format = "CPU: %usage"
 }
 
-disk "/" {
-    format = "[%used / %avail]"
+memory {
+    # format = "RAM: %used (%available)/ %total"
+    format = "RAM: %used / %total"
+    threshold_degraded = "1G"
+}
+
+disk "/home/" {
+    # format = "DISK: %used (%avail)/ %total"
+    format = "DISK: %used / %total"
     low_threshold = "5"
     threshold_type = "percentage_avail"
 }
 
 tztime local {
-    format = "[%d-%m-%Y %H:%M:%S]"
+    format = "%d-%m-%Y %H:%M:%S"
 }

@@ -308,8 +308,9 @@
   (setq lsp-log-io nil)
   (setq lsp-keymap-prefix "C-c l")
   (setq lsp-headerline-breadcrumb-enable nil)
+  (setq lsp-enable-which-key-integration t)
   :config
-  (lsp-enable-which-key-integration t)
+  (setq evil-lookup-func #'lsp-describe-thing-at-point)
   (setq lsp-clients-clangd-args '("--header-insertion=never")))
 
 (use-package lsp-ivy)
@@ -357,6 +358,9 @@
   (setq gdscript-godot-executable "/bin/godot/godot")
   (setq gdscript-use-tab-indents nil)
   (setq gdscript-gdformat-save-and-format nil))
+
+(use-package glsl-mode)
+(use-package wgsl-mode)
 
 (use-package hydra)
 
@@ -423,6 +427,10 @@
   ([remap describe-key] . helpful-key))
 
 (use-package magit)
+(use-package git-gutter
+  :config
+  (global-git-gutter-mode 1))
+
 (use-package forge)
 
 (use-package cc-mode
@@ -568,5 +576,6 @@
 ;;           ([?\s-w] . exwm-workspace-switch)))
 
 ;;   (exwm-enable))
-(load-theme 'doom-winter-is-coming-dark-blue t)
+;; (load-theme 'doom-winter-is-coming-dark-blue t)
+(load-theme 'modus-vivendi-tinted t)
 (load-file custom-file)
