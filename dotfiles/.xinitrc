@@ -5,6 +5,6 @@ picom &
 
 ~/puter/scriptz/xsettings.sh
 
-feh --bg-fill ~/puter/pape/pape.jpg
+feh --bg-fill ~/puter/pape/pape2.jpg
 
 exec i3

@@ -59,6 +59,8 @@ bindsym $mod+tab focus mode_toggle
 bindsym $mod+a focus parent
 bindsym $mod+d focus child
 
+for_window [all] border normal 2
+
 # Colours               Border  Fill    Font    Indicator Child-Border
 client.focused          #4c7899 #285577 #ffffff #2e9ef4   #285577
 client.focused_inactive #333333 #5f676a #ffffff #484e50   #5f676a

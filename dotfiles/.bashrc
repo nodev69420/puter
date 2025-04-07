@@ -12,6 +12,9 @@ export LESSHISTFILE=".history"
 export XCURSOR_THEME="miku-cursor-linux"
 export XCURSOR_PATH=${XCURSOR_PATH}:~/.local/share/icons
 
+export MPD_HOST="localhost"
+export MPD_PORT="6669"
+
 alias cls="tput reset"
 alias ls='ls --color=auto'
 alias ll="ls -lah"

@@ -8,28 +8,37 @@ general {
 }
 
 order += "cpu_usage"
+order += "cpu_temperature 0"
 order += "memory"
 order += "disk /home/"
+order += "volume master"
 order += "tztime local"
 
 cpu_usage {
-    # format = "CPU: 0 %cpu0 1 %cpu1"
     format = "CPU: %usage"
 }
 
+
+cpu_temperature 0 {
+    format = "TEMP: %degrees °C"
+}
+
 memory {
-    # format = "RAM: %used (%available)/ %total"
     format = "RAM: %used / %total"
     threshold_degraded = "1G"
 }
 
 disk "/home/" {
-    # format = "DISK: %used (%avail)/ %total"
     format = "DISK: %used / %total"
     low_threshold = "5"
     threshold_type = "percentage_avail"
 }
 
+volume master {
+    format = "VOL: %volume"
+    format_muted = "VOL: Muted"
+}
+
 tztime local {
-    format = "%d-%m-%Y %H:%M:%S"
+    format = "%A %d-%m-%Y %H:%M:%S"
 }
