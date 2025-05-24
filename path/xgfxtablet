@@ -1,0 +1,5 @@
+#!/bin/sh
+
+id=`xinput list --id-only "UGTABLET 10 inch PenTablet Pen stylus"`
+
+xinput map-to-output $id HDMI-1

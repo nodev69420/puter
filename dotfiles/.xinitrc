@@ -1,10 +1,8 @@
-# xhost +SI:localuser:$USER
-export _JAVA_AWT_WM_NONREPARENTING=1
-
 picom &
 
-~/puter/scriptz/xsettings.sh
+xsettings
 
-feh --bg-fill ~/puter/pape/pape2.jpg
+# feh --bg-fill ~/puter/pape/pape3.jpg
 
-exec i3
+# exec i3
+qtile start

@@ -7,40 +7,40 @@ mod = "mod4"
 terminal = guess_terminal()
 
 keys = [
-    Key([mod], "h", lazy.layout.left(), desc="Move focus to left"),
-    Key([mod], "l", lazy.layout.right(), desc="Move focus to right"),
-    Key([mod], "j", lazy.layout.down(), desc="Move focus down"),
-    Key([mod], "k", lazy.layout.up(), desc="Move focus up"),
-    Key([mod], "space", lazy.layout.next(), desc="Move window focus to other window"),
-    Key([mod, "shift"], "h", lazy.layout.shuffle_left(), desc="Move window to the left"),
-    Key([mod, "shift"], "l", lazy.layout.shuffle_right(), desc="Move window to the right"),
-    Key([mod, "shift"], "j", lazy.layout.shuffle_down(), desc="Move window down"),
-    Key([mod, "shift"], "k", lazy.layout.shuffle_up(), desc="Move window up"),
-    Key([mod, "control"], "h", lazy.layout.grow_left(), desc="Grow window to the left"),
-    Key([mod, "control"], "l", lazy.layout.grow_right(), desc="Grow window to the right"),
-    Key([mod, "control"], "j", lazy.layout.grow_down(), desc="Grow window down"),
-    Key([mod, "control"], "k", lazy.layout.grow_up(), desc="Grow window up"),
-    Key([mod], "n", lazy.layout.normalize(), desc="Reset all window sizes"),
+    Key([mod], "h", lazy.layout.left(), desc="move focus to left"),
+    Key([mod], "l", lazy.layout.right(), desc="move focus to right"),
+    Key([mod], "j", lazy.layout.down(), desc="move focus down"),
+    Key([mod], "k", lazy.layout.up(), desc="move focus up"),
+    Key([mod], "space", lazy.layout.next(), desc="move window focus to other window"),
+    Key([mod, "shift"], "h", lazy.layout.shuffle_left(), desc="move window to the left"),
+    Key([mod, "shift"], "l", lazy.layout.shuffle_right(), desc="move window to the right"),
+    Key([mod, "shift"], "j", lazy.layout.shuffle_down(), desc="move window down"),
+    Key([mod, "shift"], "k", lazy.layout.shuffle_up(), desc="move window up"),
+    Key([mod, "control"], "h", lazy.layout.grow_left(), desc="grow window to the left"),
+    Key([mod, "control"], "l", lazy.layout.grow_right(), desc="grow window to the right"),
+    Key([mod, "control"], "j", lazy.layout.grow_down(), desc="grow window down"),
+    Key([mod, "control"], "k", lazy.layout.grow_up(), desc="grow window up"),
+    Key([mod], "n", lazy.layout.normalize(), desc="reset all window sizes"),
     Key(
         [mod, "shift"],
-        "Return",
+        "return",
         lazy.layout.toggle_split(),
-        desc="Toggle between split and unsplit sides of stack",
+        desc="toggle between split and unsplit sides of stack",
     ),
-    Key([mod], "Return", lazy.spawn(terminal), desc="Launch terminal"),
-    Key([mod], "Tab", lazy.next_layout(), desc="Toggle between layouts"),
-    Key([mod], "w", lazy.window.kill(), desc="Kill focused window"),
+    Key([mod], "return", lazy.spawn(terminal), desc="launch terminal"),
+    Key([mod], "tab", lazy.next_layout(), desc="toggle between layouts"),
+    Key([mod], "w", lazy.window.kill(), desc="kill focused window"),
     Key(
         [mod],
         "f",
         lazy.window.toggle_fullscreen(),
-        desc="Toggle fullscreen on the focused window",
+        desc="toggle fullscreen on the focused window",
     ),
-    Key([mod], "t", lazy.window.toggle_floating(), desc="Toggle floating on the focused window"),
-    Key([mod], "r", lazy.reload_config(), desc="Reload the config"),
-    Key([mod, "shift"], "q", lazy.shutdown(), desc="Shutdown Qtile"),
-    Key([mod], "p", lazy.spawn("rofi -show drun"), desc="Rofi DRUN"),
-    Key([mod], "m", lazy.spawn("rofi -show window"), desc="Rofi Window"),
+    Key([mod], "t", lazy.window.toggle_floating(), desc="toggle floating on the focused window"),
+    Key([mod], "r", lazy.reload_config(), desc="reload the config"),
+    Key([mod, "shift"], "q", lazy.shutdown(), desc="shutdown qtile"),
+    Key([mod], "p", lazy.spawn("rofi -show drun"), desc="rofi drun"),
+    Key([mod], "m", lazy.spawn("rofi -show window"), desc="rofi window"),
 ]
 
 for vt in range(1, 8):
@@ -76,7 +76,11 @@ for i in groups:
 
 layouts = [
     layout.Max(),
-    layout.Columns(border_width=0),
+    layout.Columns(
+        border_width=1,
+        border_focus='#285577',
+        border_normal='#222222',
+    ),
     # layout.Stack(num_stacks=2),
     # layout.Bsp(),
     # layout.Matrix(),
@@ -90,27 +94,47 @@ layouts = [
 ]
 
 widget_defaults = dict(
-    font="JetBrainsMono Nerd Font Mono",
-    fontsize=15,
+    font="TerminessNerdFontMono",
+    fontsize=12,
     padding=1,
 )
 extension_defaults = widget_defaults.copy()
 
 screens = [
     Screen(
+        top=bar.Bar(
+            [
+                widget.WindowCount(
+                    fmt='[{}]'
+                ),
+                widget.WindowTabs(
+                    padding=8,
+                ),
+                widget.Spacer(),
+                widget.Clock(
+                    format="%d-%m-%Y %a %H:%M:%S",
+                    padding=8,
+                ),
+            ],
+            24,
+            background='#285577',
+            border_color='#4c7899',
+            border_width=1,
+        ),
         bottom=bar.Bar(
             [
                 widget.CurrentLayoutIcon(),
-                widget.GroupBox(
-                    highlight_method='text'
+                widget.GroupBox(highlight_method='text'),
+                widget.Spacer(),
+                widget.CPUGraph(
+                    border_width=1,
                 ),
-                widget.WindowTabs(),
                 widget.Systray(),
-                widget.Clock(format="%d-%m-%Y %a %H:%M:%S"),
+                # widget.Clock(format="%d-%m-%Y %a %H:%M:%S"),
             ],
             24,
         ),
-        wallpaper="~/puter/pape/pape.jpg",
+        wallpaper="~/puter/pape/pape3.jpg",
         wallpaper_mode="fill"
     ),
 ]
@@ -144,6 +168,6 @@ focus_on_window_activation = "smart"
 reconfigure_screens = True
 auto_minimize = True
 wl_input_rules = None
-wl_xcursor_theme = None
+wl_xcursor_theme = "miku-cursor-linux"
 wl_xcursor_size = 24
 wmname = "LG3D"

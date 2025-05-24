@@ -9,6 +9,9 @@ export BROWSER="firefox"
 export DOTNET_CLI_TELEMETRY_OPTOUT=1
 export LESSHISTFILE=".history"
 
+export GERBIL_INSTALL_PREFIX=/opt/gerbil
+export PATH=${PATH}:${GERBIL_INSTALL_PREFIX}/bin
+
 export XCURSOR_THEME="miku-cursor-linux"
 export XCURSOR_PATH=${XCURSOR_PATH}:~/.local/share/icons
 
@@ -20,4 +23,5 @@ alias ls='ls --color=auto'
 alias ll="ls -lah"
 alias grep='grep --color=auto'
 alias tmux="tmux -2"
+
 PS1='[\u@\h \W]\$ '

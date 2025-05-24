@@ -1,7 +1,3 @@
-;;; package -- Summary
-;;; Commentary:
-;;; Code:
-
 (setq custom-file "~/.emacs.d/custom.el")
 (scroll-bar-mode -1)
 (tool-bar-mode -1)
@@ -16,8 +12,8 @@
 (setq-default tab-width 4)
 (setq-default indent-tabs-mode nil)
 
-;; Transparency
-;; (set-frame-parameter nil 'alpha-background 95)
+;; transparency
+(set-frame-parameter nil 'alpha-background 90)
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 (setq vc-follow-symlinks t)
@@ -57,11 +53,11 @@
 (setq gc-cons-threshold (* 100 1024 1024))
 
 (defun adam/qoutize-string (str)
-  "Surround a string STR in \"\" qoutes."
+  "surround a string STR in \"\" qoutes."
   (concat "\"" str "\""))
 
 (defun adam/set-font (font-name font-size)
-  "Set frame font FONT-NAME and size FONT-SIZE."
+  "set frame font FONT-NAME and size FONT-SIZE."
   (let ((font-height (* font-size 10)))
     (set-face-attribute
      'default nil
@@ -79,7 +75,7 @@
      `(font . ,font-frame))))
 
 (defun adam/set-frame-default-params ()
-  "Set all frame params."
+  "set all frame params."
   (adam/set-font "JetBrainsMono Nerd Font Mono" 13))
 
 ;; Emacs daemon-mode doesn't load frame params correctly.
@@ -94,66 +90,66 @@
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
 (defun adam/enable-fast-keys ()
-  "Enable fast typing."
+  "enable fast typing."
   (interactive)
   (shell-command-to-string "xset r rate 200 80"))
 
 (defun adam/goto-init-file ()
-  "Open init file."
+  "open init file."
   (interactive)
   (find-file user-init-file))
 
 (defun adam/goto-homepage ()
-  "Find plan."
+  "find plan."
   (interactive)
   (find-file "~/adam/homepage.org"))
 
 (defun adam/reload-init-file ()
-  "Reload Emacs config."
+  "reload emacs config."
   (interactive)
   (load-file user-init-file))
 
 (defun adam/switch-buffer ()
-  "Switch to buffer command."
+  "switch to buffer command."
   (interactive)
   (call-interactively #'counsel-switch-buffer))
 
 (defun adam/ibuffer ()
-  "Interactive buffer menu."
+  "interactive buffer menu."
   (interactive)
   (call-interactively #'ibuffer))
 
 (defun adam/find-file ()
-  "Find file."
+  "find file."
   (interactive)
   (call-interactively #'find-file-existing))
 
 (defun adam/find-file-new()
-  "File file new."
+  "file file new."
   (interactive)
   (call-interactively #'counsel-find-file))
 
 (defun adam/imenu ()
-  "Interactive menu."
+  "interactive menu."
   (interactive)
   (call-interactively #'counsel-imenu))
 
 (defun adam/M-x ()
-  "Meta X."
+  "meta x."
   (interactive)
   (call-interactively #'counsel-M-x))
 
 (defun adam/lookup-func ()
-  "Lookup symbol under cursor."
+  "lookup symbol under cursor."
   (interactive)
-  (cond ((eq major-mode 'elisp-mode)
+  (cond ((eq major-mode 'emacs-lisp-mode)
          (call-interactively #'describe-symbol))
         ((eq lsp-mode t)
          (call-interactively #'lsp-describe-thing-at-point))
         (t (call-interactively #'man))))
 
 (defun adam/fuzzy-find ()
-  "Fuzzy find based on the contents of the current buffer."
+  "fuzzy find based on the contents of the current buffer."
   (interactive)
   (cond ((eq major-mode 'dired-mode)
          (call-interactively #'adam/find-file))
@@ -170,8 +166,8 @@
   (cdr (assoc auth-sym (json-read-file adam/auth-file))))
 
 (defun adam/display-startup-time ()
-  "Display Emacs starting time."
-  (message "Emacs loaded in: %s, gc collects: %d."
+  "display emacs starting time."
+  (message "emacs loaded in: %s, gc collects: %d."
            (format "%.2f seconds"
                    (float-time
                     (time-subtract after-init-time before-init-time)))
@@ -179,7 +175,7 @@
 (add-hook 'emacs-startup-hook #'adam/display-startup-time)
 
 (defun myeshell/clear ()
-  "Clears the current EShell Buffer."
+  "clears the current eshell buffer."
   (interactive)
   (let ((inhibit-read-only t))
     (erase-buffer)))
@@ -197,17 +193,16 @@
 
 (setq use-package-always-ensure t)
 
-
 (use-package emacs
   :hook (emacs-lisp-mode . adam/elisp-setup)
   :config
   (defun adam/elisp-setup ()
-    "Custom ELisp Setup."
+    "custom elisp setup."
     (setq-local imenu-generic-expression
-                '(("Functions" "^\\s-*(defun\\s-+\\([^[:space:]]+\\)" 1)
-                  ("Variables" "^\\s-*(defvar\\s-+\\([^[:space:]]+\\)" 1)
-                  ("Macros" "^\\s-*(defmacro\\s-+\\([^[:space:]]+\\)" 1)
-                  ("Packages" "^\\s-*(use-package\\s-+\\([^[:space:]]+\\)" 1)))))
+                '(("FUNCTIONS" "^\\s-*(defun\\s-+\\([^[:space:]]+\\)" 1)
+                  ("VARIABLES" "^\\s-*(defvar\\s-+\\([^[:space:]]+\\)" 1)
+                  ("MACROS" "^\\s-*(defmacro\\s-+\\([^[:space:]]+\\)" 1)
+                  ("PACKAGES" "^\\s-*(use-package\\s-+\\([^[:space:]]+\\)" 1)))))
 
 ;; (use-package perspective
 ;;   :init
@@ -365,9 +360,7 @@
   (setq org-edit-src-content-indentation 0)
   (setq org-link-descriptive t))
 
-(use-package flycheck
-  :config
-  (add-hook 'after-init-hook #'global-flycheck-mode))
+(use-package flycheck)
 
 (use-package lsp-mode
   :init
@@ -425,6 +418,55 @@
 (use-package i3wm-config-mode)
 
 (use-package css-mode)
+
+(use-package geiser-gambit)
+
+(use-package gerbil-mode
+  :ensure nil
+  :when (file-directory-p *gerbil-path*)
+  :preface
+  (defvar *gerbil-path*
+    (shell-command-to-string "gxi -e '(display (path-expand \"~~\"))'\
+      -e '(flush-output-port)'"))
+  (defun gerbil-setup-buffers ()
+    "Change current buffer mode to gerbil-mode and start a REPL"
+    (interactive)
+    (gerbil-mode)
+    (split-window-right)
+    (shrink-window-horizontally 2)
+    (let ((buf (buffer-name)))
+      (other-window 1)
+      (run-scheme "gxi")
+      (switch-to-buffer-other-window "*scheme*" nil)
+      (switch-to-buffer buf)))
+  (defun clear-comint-buffer ()
+    (interactive)
+    (with-current-buffer "*scheme*"
+      (let ((comint-buffer-maximum-size 0))
+        (comint-truncate-buffer))))
+  :mode (("\\.ss\\'"  . gerbil-mode)
+         ("\\.pkg\\'" . gerbil-mode))
+  :bind (:map comint-mode-map
+              (("C-S-n" . comint-next-input)
+               ("C-S-p" . comint-previous-input)
+               ("C-S-l" . clear-comint-buffer))
+              :map gerbil-mode-map
+              (("C-S-l" . clear-comint-buffer)))
+  :init
+  (autoload 'gerbil-mode
+    (expand-file-name "share/emacs/site-lisp/gerbil-mode.el" *gerbil-path*)
+    "Gerbil editing mode." t)
+  (global-set-key (kbd "C-c C-g") 'gerbil-setup-buffers)
+  :hook
+  (inferior-scheme-mode . gambit-inferior-mode)
+  :config
+  (require 'gambit
+           (expand-file-name "share/emacs/site-lisp/gambit.el" *gerbil-path*))
+  (setf scheme-program-name (expand-file-name "bin/gxi" *gerbil-path*))
+  (let ((tags (locate-dominating-file default-directory "TAGS")))
+    (when tags (visit-tags-table tags)))
+  (let ((tags (expand-file-name "src/TAGS" *gerbil-path*)))
+    (when (file-exists-p tags) (visit-tags-table tags))))
 
 (use-package sly
   :config
@@ -484,9 +526,9 @@
 (use-package dired-open
   :config
   (setq dired-open-extensions
-        '(("gif" . "feh")
-          ("jpg" . "feh")
-          ("png" . "feh")
+        '(("gif" . "ristretto")
+          ("jpg" . "ristretto")
+          ("png" . "ristretto")
           ("mkv" . "mpv")
           ("mp4" . "mpv")
           ("webm" . "mpv")
@@ -532,7 +574,7 @@
   :config
   (global-git-gutter-mode 1))
 
-;; (use-package forge)
+(use-package forge)
 
 (use-package python-mode
   :config
@@ -576,14 +618,14 @@
   (add-hook 'c++-mode-hook 'lsp-mode)
   (setq c-default-style "adam"))
 
-;; (use-package emms
-;;   :init
-;;   (emms-all)
-;;   (setq emms-player-list '(emms-player-mpv))
-;;   (setq emms-info-functions '(emms-info-native))
-;;   :config
-;;   (setq-default emms-source-file-default-directory "~/Music/")
-;;   (setq-default emms-volume-change-function 'emms-volume-pulse-change))
+(use-package emms
+  :init
+  (emms-all)
+  (setq emms-player-list '(emms-player-mpv))
+  (setq emms-info-functions '(emms-info-native))
+  :config
+  (setq-default emms-source-file-default-directory "~/Music/")
+  (setq-default emms-volume-change-function 'emms-volume-pulse-change))
 
 (use-package gptel
   :config
@@ -608,91 +650,92 @@
   (adam/leader-keys
     "SPC" '(adam/M-x :wk "M-x")
 
-    "s" '(:ignore t :wk "Search")
-    "ss" '(swiper :wk "Search Swiper")
+    "s" '(:ignore t :wk "search")
+    "ss" '(swiper :wk "search swiper")
 
-    "d" '(:ignore t :wk "Debug")
-    "dm" '(dap-hydra :wk "Debug Menu")
+    "d" '(:ignore t :wk "debug")
+    "dm" '(dap-hydra :wk "debug menu")
 
-    "a" '(:ignore t :wk "AI")
-    "aa" '(gptel :wk "AI Start")
+    "a" '(:ignore t :wk "ai")
+    "aa" '(gptel :wk "ai start")
 
-    "f" '(:ignore t :wk "Find")
-    "fc" '(adam/goto-init-file :wk "Find Config")
-    "fh" '(adam/goto-homepage :wk "Find Homepage")
-    "fp" '(list-processes :wk "Find Processes")
-    "ff" '(adam/fuzzy-find :wk "Find Fuzzy-Contextual")
-    "fa" '(lsp-ivy-workspace-symbol :wk "Find LSP Symbol")
-    "f." '(adam/find-file :wk "Find File")
-    "f," '(projectile-find-file :wk "Find Project File")
-    "fz" '(projectile-switch-project :wk "Find Project")
-    "fn" '(adam/find-file-new :wk "File File New")
+    "f" '(:ignore t :wk "find")
+    "fc" '(adam/goto-init-file :wk "find config")
+    "fh" '(adam/goto-homepage :wk "find homepage")
+    "fp" '(list-processes :wk "find processes")
+    "ff" '(adam/fuzzy-find :wk "find fuzzy-contextual")
+    "fa" '(lsp-ivy-workspace-symbol :wk "find lsp symbol")
+    "f." '(adam/find-file :wk "find file")
+    "f," '(projectile-find-file :wk "find project file")
+    "fz" '(projectile-switch-project :wk "find project")
+    "fn" '(adam/find-file-new :wk "file file new")
 
-    "gg" '(magit :wk "Magit")
+    "gg" '(magit :wk "magit")
 
-    "b" '(:ignore t :wk "Buffer")
-    "bb" '(adam/switch-buffer :wk "Buffer Switch")
-    "bm" '(adam/ibuffer :wk "Buffer Menu")
-    "bx" '(kill-buffer :wk "Buffer Kill")
+    "b" '(:ignore t :wk "buffer")
+    "bb" '(adam/switch-buffer :wk "buffer switch")
+    "bm" '(adam/ibuffer :wk "buffer menu")
+    "bx" '(kill-buffer :wk "buffer kill")
 
-    ;; "m" '(:ignore t :wk "Music")
-    ;; "mm" '(emms :wk "Music")
-    ;; "mp" '(emms-pause :wk "Music Pause")
-    ;; "mf" '(emms-add-playlist-file :wk "Music Play")
+    "m" '(:ignore t :wk "music")
+    "mm" '(emms :wk "music")
+    "mp" '(emms-pause :wk "music pause")
+    "mf" '(emms-add-playlist-file :wk "music play")
 
-    "e" '(:ignore t :wk "Eval")
-    "ee" '(eval-expression :wk "Eval Expression")
-    "eb" '(eval-buffer :wk "Eval Buffer")
-    "ex" '(eval-last-sexp :wk "Eval Last Sexpr")
+    "e" '(:ignore t :wk "eval")
+    "ee" '(eval-expression :wk "eval expression")
+    "eb" '(eval-buffer :wk "eval buffer")
+    "ex" '(eval-last-sexp :wk "eval last sexpr")
 
-    "h" '(:ignore t :wk "Help")
-    "hf" '(counsel-describe-function :wk "Help Function")
-    "hv" '(counsel-describe-variable :wk "Help Variable")
+    "h" '(:ignore t :wk "help")
+    "hf" '(counsel-describe-function :wk "help function")
+    "hv" '(counsel-describe-variable :wk "help variable")
 
-    "l" '(:ignore t :wk "LSP")
-    "lr" '(lsp-rename :wk "LSP Rename")
-    "lf" '(lsp-find-references :wk "LSP Find References")
-    "ld" '(flycheck-list-errors :wk "LSP Errors")
-    "la" '(lsp-execute-code-action :wk "LSP Code Action")
+    "l" '(:ignore t :wk "lsp")
+    "lr" '(lsp-rename :wk "lsp rename")
+    "lf" '(lsp-find-references :wk "lsp find references")
+    "ld" '(flycheck-list-errors :wk "lsp errors")
+    "la" '(lsp-execute-code-action :wk "lsp code action")
+    "ls" '(lsp-treemacs-symbols :wk "lsp symbols tab")
 
-    "p" '(:ignore t :wk "Perspective")
-    "pp" '(persp-switch :wk "Perspective Switch")
-    "px" '(persp-kill :wk "Perspective Kill")
+    "p" '(:ignore t :wk "perspective")
+    "pp" '(persp-switch :wk "perspective switch")
+    "px" '(persp-kill :wk "perspective kill")
 
-    "w" '(:ignore t :wk "Window")
-    "w1" '(delete-other-windows :wk "Window Solo")
-    "wn" '(evil-window-split :wk "Window Split Horizontal")
-    "wv" '(evil-window-vsplit :wk "Window Split Vertical")
-    "ww" '(evil-window-next :wk "Window Next")
-    "wc" '(evil-window-delete :wk "Window Close")
-    "wx" '(kill-buffer-and-window :wk "Window Kill and Close")
-    "wh" '(evil-window-left :wk "Window Left")
-    "wj" '(evil-window-down :wk "Window Down")
-    "wk" '(evil-window-up :wk "Window Up")
-    "wl" '(evil-window-right :wk "Window Right")
+    "w" '(:ignore t :wk "window")
+    "w1" '(delete-other-windows-internal :wk "window solo")
+    "wn" '(evil-window-split :wk "window split horizontal")
+    "wv" '(evil-window-vsplit :wk "window split vertical")
+    "ww" '(evil-window-next :wk "window next")
+    "wc" '(evil-window-delete :wk "window close")
+    "wx" '(kill-buffer-and-window :wk "window kill and close")
+    "wh" '(evil-window-left :wk "window left")
+    "wj" '(evil-window-down :wk "window down")
+    "wk" '(evil-window-up :wk "window up")
+    "wl" '(evil-window-right :wk "window right")
 
-    "c" '(:ignore t :wk "Command")
-    "ce" '(eshell :wk "Command Eshell")
+    "c" '(:ignore t :wk "command")
+    "ce" '(eshell :wk "command eshell")
     "cc" '((lambda ()
                (interactive)
                (call-interactively #'compile))
-           :wk "Command Current")
+           :wk "command current")
     "cp" '((lambda ()
                (interactive)
                (when (projectile-project-p)
                    (call-interactively #'projectile-compile-project)))
-               :wk "Command Project")
+               :wk "command project")
     "cn" '((lambda ()
                (interactive)
                (setq compile-command "")
                (call-interactively #'compile))
-           :wk "Command New")
+           :wk "command new")
 
-    "r" '(:ignore t :wk "Reload")
-    "rc" '(adam/reload-init-file :wk "Reload Config")
+    "r" '(:ignore t :wk "reload")
+    "rc" '(adam/reload-init-file :wk "reload config")
 
-    "q" '(:ignore t :wk "Quick Tool")
-    "qq" '(quick-calc :wk "Quick Tool Calculator")))
+    "q" '(:ignore t :wk "quick tool")
+    "qq" '(quick-calc :wk "quick tool calculator")))
 
 
 (define-minor-mode adam-mode
@@ -769,4 +812,3 @@
 (adam/goto-homepage)
 
 (provide 'init)
-;;; init.el ends here
