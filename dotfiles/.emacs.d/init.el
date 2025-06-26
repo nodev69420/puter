@@ -419,58 +419,60 @@
 
 (use-package css-mode)
 
-(use-package geiser-gambit)
+;; (use-package geiser-gambit)
 
-(use-package gerbil-mode
-  :ensure nil
-  :when (file-directory-p *gerbil-path*)
-  :preface
-  (defvar *gerbil-path*
-    (shell-command-to-string "gxi -e '(display (path-expand \"~~\"))'\
-      -e '(flush-output-port)'"))
-  (defun gerbil-setup-buffers ()
-    "Change current buffer mode to gerbil-mode and start a REPL"
-    (interactive)
-    (gerbil-mode)
-    (split-window-right)
-    (shrink-window-horizontally 2)
-    (let ((buf (buffer-name)))
-      (other-window 1)
-      (run-scheme "gxi")
-      (switch-to-buffer-other-window "*scheme*" nil)
-      (switch-to-buffer buf)))
-  (defun clear-comint-buffer ()
-    (interactive)
-    (with-current-buffer "*scheme*"
-      (let ((comint-buffer-maximum-size 0))
-        (comint-truncate-buffer))))
-  :mode (("\\.ss\\'"  . gerbil-mode)
-         ("\\.pkg\\'" . gerbil-mode))
-  :bind (:map comint-mode-map
-              (("C-S-n" . comint-next-input)
-               ("C-S-p" . comint-previous-input)
-               ("C-S-l" . clear-comint-buffer))
-              :map gerbil-mode-map
-              (("C-S-l" . clear-comint-buffer)))
-  :init
-  (autoload 'gerbil-mode
-    (expand-file-name "share/emacs/site-lisp/gerbil-mode.el" *gerbil-path*)
-    "Gerbil editing mode." t)
-  (global-set-key (kbd "C-c C-g") 'gerbil-setup-buffers)
-  :hook
-  (inferior-scheme-mode . gambit-inferior-mode)
-  :config
-  (require 'gambit
-           (expand-file-name "share/emacs/site-lisp/gambit.el" *gerbil-path*))
-  (setf scheme-program-name (expand-file-name "bin/gxi" *gerbil-path*))
-  (let ((tags (locate-dominating-file default-directory "TAGS")))
-    (when tags (visit-tags-table tags)))
-  (let ((tags (expand-file-name "src/TAGS" *gerbil-path*)))
-    (when (file-exists-p tags) (visit-tags-table tags))))
+;; (use-package gerbil-mode
+;;   :ensure nil
+;;   :when (file-directory-p *gerbil-path*)
+;;   :preface
+;;   (defvar *gerbil-path*
+;;     (shell-command-to-string "gxi -e '(display (path-expand \"~~\"))'\
+;;       -e '(flush-output-port)'"))
+;;   (defun gerbil-setup-buffers ()
+;;     "Change current buffer mode to gerbil-mode and start a REPL"
+;;     (interactive)
+;;     (gerbil-mode)
+;;     (split-window-right)
+;;     (shrink-window-horizontally 2)
+;;     (let ((buf (buffer-name)))
+;;       (other-window 1)
+;;       (run-scheme "gxi")
+;;       (switch-to-buffer-other-window "*scheme*" nil)
+;;       (switch-to-buffer buf)))
+;;   (defun clear-comint-buffer ()
+;;     (interactive)
+;;     (with-current-buffer "*scheme*"
+;;       (let ((comint-buffer-maximum-size 0))
+;;         (comint-truncate-buffer))))
+;;   :mode (("\\.ss\\'"  . gerbil-mode)
+;;          ("\\.pkg\\'" . gerbil-mode))
+;;   :bind (:map comint-mode-map
+;;               (("C-S-n" . comint-next-input)
+;;                ("C-S-p" . comint-previous-input)
+;;                ("C-S-l" . clear-comint-buffer))
+;;               :map gerbil-mode-map
+;;               (("C-S-l" . clear-comint-buffer)))
+;;   :init
+;;   (autoload 'gerbil-mode
+;;     (expand-file-name "share/emacs/site-lisp/gerbil-mode.el" *gerbil-path*)
+;;     "Gerbil editing mode." t)
+;;   (global-set-key (kbd "C-c C-g") 'gerbil-setup-buffers)
+;;   :hook
+;;   (inferior-scheme-mode . gambit-inferior-mode)
+;;   :config
+;;   (require 'gambit
+;;            (expand-file-name "share/emacs/site-lisp/gambit.el" *gerbil-path*))
+;;   (setf scheme-program-name (expand-file-name "bin/gxi" *gerbil-path*))
+;;   (let ((tags (locate-dominating-file default-directory "TAGS")))
+;;     (when tags (visit-tags-table tags)))
+;;   (let ((tags (expand-file-name "src/TAGS" *gerbil-path*)))
+;;     (when (file-exists-p tags) (visit-tags-table tags))))
+
+(use-package geiser-guile)
 
 (use-package sly
   :config
-  (setq inferior-lisp-program "/bin/sbcl"))
+  (setq inferior-lisp-program "/bin/sbcl --dynamic-space-size 4Gb"))
 
 (use-package sly-asdf)
 (use-package sly-quicklisp)
