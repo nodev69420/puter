@@ -46,11 +46,15 @@
 (setq delete-old-versions t)
 (setq backup-directory-alist '(("." . "~/.emacs.d/backup")))
 
+(push "/home/adam/.emacs.d/extra/" load-path)
+
 (electric-pair-mode 1)
 (setq compile-command "")
 
 (setq read-process-output-max (* 1024 1024))
 (setq gc-cons-threshold (* 100 1024 1024))
+
+;; * ADAM FUNCTIONS
 
 (defun adam/qoutize-string (str)
   "surround a string STR in \"\" qoutes."
@@ -76,7 +80,8 @@
 
 (defun adam/set-frame-default-params ()
   "set all frame params."
-  (adam/set-font "JetBrainsMono Nerd Font Mono" 13))
+  ;; (adam/set-font "JetBrainsMono Nerd Font Mono" 13)
+  (adam/set-font "Iosevka Nerd Font Mono" 13))
 
 ;; Emacs daemon-mode doesn't load frame params correctly.
 (if (daemonp)
@@ -100,9 +105,9 @@
   (find-file user-init-file))
 
 (defun adam/goto-homepage ()
-  "find plan."
+  "find main emacs page."
   (interactive)
-  (find-file "~/adam/homepage.org"))
+  (find-file "~/adam/main.org"))
 
 (defun adam/reload-init-file ()
   "reload emacs config."
@@ -124,7 +129,7 @@
   (interactive)
   (call-interactively #'find-file-existing))
 
-(defun adam/find-file-new()
+(defun adam/find-file-new ()
   "file file new."
   (interactive)
   (call-interactively #'counsel-find-file))
@@ -193,6 +198,8 @@
 
 (setq use-package-always-ensure t)
 
+;; * EMAC
+
 (use-package emacs
   :hook (emacs-lisp-mode . adam/elisp-setup)
   :config
@@ -202,13 +209,16 @@
                 '(("FUNCTIONS" "^\\s-*(defun\\s-+\\([^[:space:]]+\\)" 1)
                   ("VARIABLES" "^\\s-*(defvar\\s-+\\([^[:space:]]+\\)" 1)
                   ("MACROS" "^\\s-*(defmacro\\s-+\\([^[:space:]]+\\)" 1)
-                  ("PACKAGES" "^\\s-*(use-package\\s-+\\([^[:space:]]+\\)" 1)))))
+                  ("PACKAGES" "^\\s-*(use-package\\s-+\\([^[:space:]]+\\)" 1)))
+    ))
 
 ;; (use-package perspective
 ;;   :init
 ;;   (persp-mode 1)
 ;;   :config
 ;;   (setq persp-mode-prefix-key (kbd "C-x x")))
+
+;; * UI
 
 (use-package counsel
   :init
@@ -251,12 +261,47 @@
   ivy
   :init (ivy-rich-mode 1))
 
+;; (use-package hydra)
+
 (use-package all-the-icons)
 (use-package all-the-icons-completion)
 (use-package all-the-icons-dired)
 (use-package all-the-icons-ibuffer)
 (use-package all-the-icons-ivy)
 (use-package all-the-icons-nerd-fonts)
+
+(use-package which-key
+  :init
+  (which-key-mode 1)
+  :config
+  (setq which-key-side-window-location 'bottom
+        which-key-sort-order #'which-key-key-order-alpha
+        which-key-sort-uppercase-first nil
+        which-key-max-display-columns nil
+        which-key-min-display-lines 6))
+
+(use-package counsel-projectile
+  :config
+  (counsel-projectile-mode))
+
+(use-package rainbow-delimiters
+  :hook
+  (prog-mode . rainbow-delimiters-mode))
+
+(use-package company
+  :after
+  lsp-mode
+  :hook (prog-mode . company-mode)
+  :bind
+  (:map company-active-map
+        ("C-l" . company-complete-selection)
+        ("<return>" . nil)
+        ("RET" . nil))
+  :custom
+  (company-minimum-prefix-length 1)
+  (company-idle-delay 0.0))
+
+;; * THEMES
 
 (use-package doom-themes
   :config
@@ -267,7 +312,6 @@
   (setq doom-ir-black-brighter-comments t))
 
 (use-package modus-themes)
-(use-package morrowind-theme)
 
 (use-package doom-modeline
   :init
@@ -276,9 +320,7 @@
   (setq doom-modeline-height 28)
   (setq doom-modeline-enable-word-count t))
 
-(use-package rainbow-delimiters
-  :hook
-  (prog-mode . rainbow-delimiters-mode))
+;; * EVIL
 
 (use-package evil
   :init
@@ -329,36 +371,22 @@
   :config
   (evil-collection-init))
 
-(use-package projectile
-  :config
-  (projectile-mode)
-  :custom ((projectile-completion-system 'ivy))
-  :bind-keymap
-  ("C-c p" . projectile-command-map)
-  :init
-  (when (file-directory-p "~/work")
-    (setq projectile-project-search-path '("~/work")))
-  (setq projectile-switch-project-action #'projectile-dired))
+(use-package evil-nerd-commenter
+  :bind
+  ("C-;" . evilnc-comment-or-uncomment-lines))
 
-(use-package which-key
-  :init
-  (which-key-mode 1)
-  :config
-  (setq which-key-side-window-location 'bottom
-        which-key-sort-order #'which-key-key-order-alpha
-        which-key-sort-uppercase-first nil
-        which-key-max-display-columns nil
-        which-key-min-display-lines 6))
+;; (use-package projectile
+;;   :config
+;;   (projectile-mode)
+;;   :custom ((projectile-completion-system 'ivy))
+;;   :bind-keymap
+;;   ("C-c p" . projectile-command-map)
+;;   :init
+;;   (when (file-directory-p "~/work")
+;;     (setq projectile-project-search-path '("~/work")))
+;;   (setq projectile-switch-project-action #'projectile-dired))
 
-(use-package counsel-projectile
-  :config
-  (counsel-projectile-mode))
-
-
-(use-package org
-  :config
-  (setq org-edit-src-content-indentation 0)
-  (setq org-link-descriptive t))
+;; * LSP
 
 (use-package flycheck)
 
@@ -383,129 +411,20 @@
   :config
   (yas-global-mode 1))
 
-(use-package company
-  :after
-  lsp-mode
-  :hook (prog-mode . company-mode)
-  :bind
-  (:map company-active-map
-        ("C-l" . company-complete-selection)
-        ("<return>" . nil)
-        ("RET" . nil))
-  :custom
-  (company-minimum-prefix-length 1)
-  (company-idle-delay 0.0))
-
 ;; (use-package dap-mode
+;;   :hook (dap-stopped . (lambda (arg) (call-interactively #'dap-hydra)))
 ;;   :config
-;;   (add-hook 'dap-stopped-hook (lambda (arg) (call-interactively #'dap-hydra)))
-;;   (require 'dap-cpptools)
-;;   (with-eval-after-load 'dap-cpptools
-;;     (dap-register-debug-template "Rust::Cpptools Run Configuration"
-;;                                  (list :type "cppdbg"
-;;                                        :request "launch"
-;;                                        :name "Rust::Run"
-;;                                        :MIMode "gdb"
-;;                                        :miDebuggerPath "rust-gdb"
-;;                                        :environment []
-;;                                        :program "${workspaceFolder}/target/debug/mystery-dungeon"
-;;                                        :cwd "${workspaceFolder}"
-;;                                        :console "external"
-;;                                        :dap-compilation "cargo build"
-;;                                        :dap-compilation-dir "${workspaceFolder}")))
-;;   (setq dap-default-terminal-kind "integrated"))
+;;   (setq lsp-enable-dap-auto-configure nil)
+;;   (require 'dap-gdb)
+;;   (dap-register-debug-template
+;;    "gdb-pok"
+;;    (list :type "gdb"
+;;          :request "launch"
+;;          :name "gdb-pok"
+;;          :program "${workspaceFolder}/out/pok"
+;;          :args "./test/test.pok")))
 
-(use-package i3wm-config-mode)
-
-(use-package css-mode)
-
-;; (use-package geiser-gambit)
-
-;; (use-package gerbil-mode
-;;   :ensure nil
-;;   :when (file-directory-p *gerbil-path*)
-;;   :preface
-;;   (defvar *gerbil-path*
-;;     (shell-command-to-string "gxi -e '(display (path-expand \"~~\"))'\
-;;       -e '(flush-output-port)'"))
-;;   (defun gerbil-setup-buffers ()
-;;     "Change current buffer mode to gerbil-mode and start a REPL"
-;;     (interactive)
-;;     (gerbil-mode)
-;;     (split-window-right)
-;;     (shrink-window-horizontally 2)
-;;     (let ((buf (buffer-name)))
-;;       (other-window 1)
-;;       (run-scheme "gxi")
-;;       (switch-to-buffer-other-window "*scheme*" nil)
-;;       (switch-to-buffer buf)))
-;;   (defun clear-comint-buffer ()
-;;     (interactive)
-;;     (with-current-buffer "*scheme*"
-;;       (let ((comint-buffer-maximum-size 0))
-;;         (comint-truncate-buffer))))
-;;   :mode (("\\.ss\\'"  . gerbil-mode)
-;;          ("\\.pkg\\'" . gerbil-mode))
-;;   :bind (:map comint-mode-map
-;;               (("C-S-n" . comint-next-input)
-;;                ("C-S-p" . comint-previous-input)
-;;                ("C-S-l" . clear-comint-buffer))
-;;               :map gerbil-mode-map
-;;               (("C-S-l" . clear-comint-buffer)))
-;;   :init
-;;   (autoload 'gerbil-mode
-;;     (expand-file-name "share/emacs/site-lisp/gerbil-mode.el" *gerbil-path*)
-;;     "Gerbil editing mode." t)
-;;   (global-set-key (kbd "C-c C-g") 'gerbil-setup-buffers)
-;;   :hook
-;;   (inferior-scheme-mode . gambit-inferior-mode)
-;;   :config
-;;   (require 'gambit
-;;            (expand-file-name "share/emacs/site-lisp/gambit.el" *gerbil-path*))
-;;   (setf scheme-program-name (expand-file-name "bin/gxi" *gerbil-path*))
-;;   (let ((tags (locate-dominating-file default-directory "TAGS")))
-;;     (when tags (visit-tags-table tags)))
-;;   (let ((tags (expand-file-name "src/TAGS" *gerbil-path*)))
-;;     (when (file-exists-p tags) (visit-tags-table tags))))
-
-(use-package geiser-guile)
-
-(use-package sly
-  :config
-  (setq inferior-lisp-program "/bin/sbcl --dynamic-space-size 4Gb"))
-
-(use-package sly-asdf)
-(use-package sly-quicklisp)
-
-(use-package zig-mode
-  :config
-  (add-hook 'zig-mode-hook 'lsp-mode)
-  (add-hook 'zig-mode-hook
-            #'(lambda ()(interactive)(zig-format-on-save-mode -1))))
-
-(use-package rust-mode
-  :config
-  (add-hook 'rust-mode-hook 'lsp-mode))
-
-(use-package go-mode
-  :config
-  (add-hook 'go-mode-hook 'lsp-mode))
-
-(use-package gdscript-mode
-  :config
-  (add-hook 'gdscript-mode-hook 'lsp-mode)
-  (setq gdscript-godot-executable "/bin/godot/godot")
-  (setq gdscript-use-tab-indents nil)
-  (setq gdscript-gdformat-save-and-format nil))
-
-(use-package glsl-mode)
-(use-package wgsl-mode)
-
-(use-package hydra)
-
-(use-package evil-nerd-commenter
-  :bind
-  ("C-;" . evilnc-comment-or-uncomment-lines))
+;; * DIRED
 
 (use-package dired
   :ensure
@@ -535,14 +454,16 @@
           ("mp4" . "mpv")
           ("webm" . "mpv")
           ("xcf" . "gimp")
-          ("pdf" . "firefox")
-          ("kra" . "krita")
+          ("pdf" . "xreader")
+          ("epub" . "xreader")
           ("blend" . "blender"))))
 
 (use-package dired-hide-dotfiles
   :config
   (evil-collection-define-key 'normal 'dired-mode-map
     "H" 'dired-hide-dotfiles-mode))
+
+;; * SHELLS
 
 (use-package eshell
   :bind
@@ -561,6 +482,8 @@
 
 (use-package vterm)
 
+;; * MISC
+
 (use-package helpful
   :custom
   (counsel-describe-function-function #'helpful-callable)
@@ -578,27 +501,58 @@
 
 (use-package forge)
 
-(use-package python-mode
+(use-package emms
+  :init
+  (emms-all)
+  (setq emms-player-list '(emms-player-mpv))
+  (setq emms-info-functions '(emms-info-native))
   :config
-  (add-hook 'python-mode-hook 'lsp-mode))
+  (setq-default emms-source-file-default-directory "~/Music/")
+  (setq-default emms-volume-change-function 'emms-volume-pulse-change))
 
-(use-package lua-mode
-  ;; :bind
-  ;; (:map evil-normal-state-map
-  ;;       ("K" . evil-lookup))
+(use-package gptel
   :config
-  (add-hook 'lua-mode-hook 'lsp-mode)
-  (define-key lua-mode-map (kbd "<normal-state> K") nil))
+  (setq gptel-model 'deepseek-chat)
+  (setq gptel-backend
+        (gptel-make-openai "DeepSeek"
+          :host "api.deepseek.com"
+          :endpoint "/chat/completions"
+          :stream t
+          :key (adam/lookup-auth 'deepseek)
+          :models '(deepseek-chat deepseek-coder))))
 
-(use-package fennel-mode
-  :config
-  (add-hook 'fennel-mode-hook 'lsp-mode))
 
+;; * DATA
+
+(use-package i3wm-config-mode)
+(use-package css-mode)
+(use-package yaml-mode)
 (use-package js2-mode
   :config
   (add-hook 'js-mode-hook 'js2-minor-mode)
   (add-hook 'js2-mode-hook 'ac-js2-mode)
   (add-hook 'js-mode-hook 'lsp-mode))
+
+(use-package org
+  :config
+  (setq org-edit-src-content-indentation 0)
+  (setq org-link-descriptive t))
+
+;; * LISPS
+
+(use-package sly
+  :config
+  (setq inferior-lisp-program "/bin/sbcl --dynamic-space-size 4Gb"))
+
+(use-package sly-asdf)
+(use-package sly-quicklisp)
+
+(use-package geiser-guile)
+
+(use-package clojure-mode)
+(use-package cider)
+
+;; * REAL LANGUAGES
 
 (use-package cc-mode
   :config
@@ -620,25 +574,39 @@
   (add-hook 'c++-mode-hook 'lsp-mode)
   (setq c-default-style "adam"))
 
-(use-package emms
-  :init
-  (emms-all)
-  (setq emms-player-list '(emms-player-mpv))
-  (setq emms-info-functions '(emms-info-native))
+(use-package zig-mode
   :config
-  (setq-default emms-source-file-default-directory "~/Music/")
-  (setq-default emms-volume-change-function 'emms-volume-pulse-change))
+  (add-hook 'zig-mode-hook 'lsp-mode)
+  (add-hook 'zig-mode-hook
+            #'(lambda ()(interactive)(zig-format-on-save-mode -1))))
 
-(use-package gptel
+(use-package rust-mode
   :config
-  (setq gptel-model 'deepseek-chat)
-  (setq gptel-backend
-        (gptel-make-openai "DeepSeek"
-          :host "api.deepseek.com"
-          :endpoint "/chat/completions"
-          :stream t
-          :key (adam/lookup-auth 'deepseek)
-          :models '(deepseek-chat deepseek-coder))))
+  (add-hook 'rust-mode-hook 'lsp-mode))
+
+(use-package go-mode
+  :config
+  (add-hook 'go-mode-hook 'lsp-mode))
+
+;; * KIDDY SCRIPTING LANGUAGES
+
+(use-package python-mode)
+
+(use-package lua-mode
+  :config
+  (add-hook 'lua-mode-hook 'lsp-mode)
+  (define-key lua-mode-map (kbd "<normal-state> K") nil))
+
+(use-package fennel-mode
+  :config
+  (add-hook 'fennel-mode-hook 'lsp-mode))
+
+;; * SHADERS
+
+(use-package glsl-mode)
+(use-package wgsl-mode)
+
+;; * KEYMAPS
 
 (use-package general
   :config
@@ -671,6 +639,7 @@
     "f," '(projectile-find-file :wk "find project file")
     "fz" '(projectile-switch-project :wk "find project")
     "fn" '(adam/find-file-new :wk "file file new")
+    "fe" '(list-matching-lines :wk "find regex")
 
     "gg" '(magit :wk "magit")
 
@@ -777,39 +746,10 @@
                              (file-name-directory (buffer-file-name)))))
             map))
 
-;; (use-package exwm
-;;   :config
-;;   (add-hook 'exwm-update-class-hook
-;;             #'(lambda () (exwm-workspace-rename-buffer exwm-class-name)))
-
-;;   (require 'exwm-randr)
-;;   (exwm-randr-enable)
-
-;;   ;; (exwm-systemtray 1)
-
-;;   (setq exwm-input-prefix-keys
-;;         '(?\C-x
-;;           ?\C-u
-;;           ?\C-h
-;;           ?\M-x
-;;           ?\M-&
-;;           ?\M-:))
-
-;;   (setq exwm-input-global-keys
-;;         `(([?\s-r] . exwm-reset)
-;;           ([?\s-h] . windmove-left)
-;;           ([?\s-j] . windmove-down)
-;;           ([?\s-k] . windmove-up)
-;;           ([?\s-l] . windmove-right)
-;;           ([?\s-&] . (lambda (command)
-;;                        (interactive (list (read-shell-command "$ ")))
-;;                        (start-process-shell-command command nil command)))
-;;           ([?\s-w] . exwm-workspace-switch)))
-
-;;   (exwm-enable))
-;; (load-theme 'doom-winter-is-coming-dark-blue t)
+;; * LAST
 
 (load-theme 'modus-vivendi-tinted t)
+;; (load-theme 'doom-winter-is-coming-dark-blue t)
 (load-file custom-file)
 (adam/goto-homepage)
 

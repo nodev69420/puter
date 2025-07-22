@@ -6,6 +6,12 @@ from libqtile.utils import guess_terminal
 mod = "mod4"
 terminal = guess_terminal()
 
+solid_colour = '#285577'
+border_colour = '#4c7899'
+
+# solid_colour = '#b3570b'
+# border_colour = '#68360c'
+
 keys = [
     Key([mod], "h", lazy.layout.left(), desc="move focus to left"),
     Key([mod], "l", lazy.layout.right(), desc="move focus to right"),
@@ -95,7 +101,7 @@ layouts = [
 
 widget_defaults = dict(
     font="TerminessNerdFontMono",
-    fontsize=12,
+    fontsize=14,
     padding=1,
 )
 extension_defaults = widget_defaults.copy()
@@ -104,11 +110,13 @@ screens = [
     Screen(
         top=bar.Bar(
             [
+                widget.Spacer(length=4),
                 widget.WindowCount(
                     fmt='[{}]'
                 ),
                 widget.WindowTabs(
                     padding=8,
+                    selected=('<i>', '</i>'),
                 ),
                 widget.Spacer(),
                 widget.Clock(
@@ -117,8 +125,8 @@ screens = [
                 ),
             ],
             24,
-            background='#285577',
-            border_color='#4c7899',
+            background=solid_colour,
+            border_color=border_colour,
             border_width=1,
         ),
         bottom=bar.Bar(
@@ -126,9 +134,24 @@ screens = [
                 widget.CurrentLayoutIcon(),
                 widget.GroupBox(highlight_method='text'),
                 widget.Spacer(),
+
+                widget.Image(filename="~/ass/circle.png", margin=4),
+                widget.Memory(),
+                widget.Spacer(length=8),
+                widget.MemoryGraph(
+                    border_width=1,
+                ),
+
+                widget.Spacer(length=8),
+
+                widget.Image(filename="~/ass/circle.png", margin=4),
+                widget.Spacer(length=8),
+                widget.CPU(),
+                widget.Spacer(length=8),
                 widget.CPUGraph(
                     border_width=1,
                 ),
+
                 widget.Systray(),
                 # widget.Clock(format="%d-%m-%Y %a %H:%M:%S"),
             ],
@@ -163,6 +186,7 @@ floating_layout = layout.Floating(
     ],
     border_width=0,
 )
+
 auto_fullscreen = True
 focus_on_window_activation = "smart"
 reconfigure_screens = True

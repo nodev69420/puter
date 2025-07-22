@@ -1,5 +1,6 @@
 configuration {
     modes: "window,run,drun";
-    font: "JetBrainsMonoNerdFont 14";
+    // font: "JetBrainsMonoNerdFont 14";
+    font: "IosevkaNerdFontMono 16";
     show-icons: true;
 }

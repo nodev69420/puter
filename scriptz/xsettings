@@ -5,7 +5,7 @@ xset r rate 200 80
 xset s off -dpms
 xsetroot -cursor_name miku-cursor-linux
 
-# xgfxtablet
+xgfxtablet
 
 # multi-monitor
 xrandr --output HDMI-1 --primary --output HDMI-2 --right-of HDMI-1

@@ -1,0 +1,3 @@
+#!/bin/sh
+
+wine /home/adam/puter/exe/bmfont64.exe
