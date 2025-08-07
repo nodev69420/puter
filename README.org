@@ -22,9 +22,9 @@ Contains config contents and a collection of other computer conservables to cach
 - Scriptz
 
 ** Fonts Used
-- JetBrainsNerdFont
+- IosevkaNerdFont
 - TerminessNerdFont
-- BigBlueTermNerdFont
+- JetBrainsNerdFont
 
 ** Resources
 - [[https://www.nerdfonts.com]]

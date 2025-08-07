@@ -5,7 +5,6 @@
 (set-fringe-mode -1)
 (menu-bar-mode -1)
 (setq visible-bell nil)
-(setq inhibit-startup-screen t)
 (column-number-mode 1)
 (setq-default cursor-in-non-selected-windows nil)
 
@@ -91,7 +90,6 @@
                     (adam/set-frame-default-params))))
   (adam/set-frame-default-params))
 
-
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
 (defun adam/enable-fast-keys ()
@@ -107,7 +105,7 @@
 (defun adam/goto-homepage ()
   "find main emacs page."
   (interactive)
-  (find-file "~/adam/main.org"))
+  (find-file "~/adam/master.org"))
 
 (defun adam/reload-init-file ()
   "reload emacs config."
@@ -185,6 +183,8 @@
   (let ((inhibit-read-only t))
     (erase-buffer)))
 
+;; * PACMAN
+
 (require 'package)
 (setq package-archives
       '(("melpa" . "https://melpa.org/packages/")
@@ -206,19 +206,12 @@
   (defun adam/elisp-setup ()
     "custom elisp setup."
     (setq-local imenu-generic-expression
-                '(("FUNCTIONS" "^\\s-*(defun\\s-+\\([^[:space:]]+\\)" 1)
-                  ("VARIABLES" "^\\s-*(defvar\\s-+\\([^[:space:]]+\\)" 1)
-                  ("MACROS" "^\\s-*(defmacro\\s-+\\([^[:space:]]+\\)" 1)
-                  ("PACKAGES" "^\\s-*(use-package\\s-+\\([^[:space:]]+\\)" 1)))
+                '(("functions" "^\\s-*(defun\\s-+\\([^[:space:]]+\\)" 1)
+                  ("variables" "^\\s-*(defvar\\s-+\\([^[:space:]]+\\)" 1)
+                  ("macros" "^\\s-*(defmacro\\s-+\\([^[:space:]]+\\)" 1)
+                  ("require" "^\\s-*(require\\s-+\\([^[:space:]]+\\)" 1)
+                  ("packages" "^\\s-*(use-package\\s-+\\([^[:space:]]+\\)" 1)))
     ))
-
-;; (use-package perspective
-;;   :init
-;;   (persp-mode 1)
-;;   :config
-;;   (setq persp-mode-prefix-key (kbd "C-x x")))
-
-;; * UI
 
 (use-package counsel
   :init
@@ -253,7 +246,8 @@
   (use-package org-ivy-search)
   (ivy-mode 1)
   (setq ivy-height 20)
-  (setq ivy-re-builders-alist '((t . ivy--regex-fuzzy))))
+  (setq ivy-re-builders-alist '((t . ivy--regex)
+                                (t . ivy--regex-fuzzy))))
 
 
 (use-package ivy-rich
@@ -454,7 +448,7 @@
           ("mp4" . "mpv")
           ("webm" . "mpv")
           ("xcf" . "gimp")
-          ("pdf" . "xreader")
+          ("pdf" . "firefox")
           ("epub" . "xreader")
           ("blend" . "blender"))))
 
@@ -555,6 +549,8 @@
 ;; * REAL LANGUAGES
 
 (use-package cc-mode
+  :hook ((c-mode . lsp-mode)
+         (c++-mode . lsp-mode))
   :config
   (c-add-style
    "adam"
@@ -569,9 +565,6 @@
       (brace-list-open . +)
       (case-label . +)
       )))
-
-  (add-hook 'c-mode-hook 'lsp-mode)
-  (add-hook 'c++-mode-hook 'lsp-mode)
   (setq c-default-style "adam"))
 
 (use-package zig-mode
@@ -751,6 +744,7 @@
 (load-theme 'modus-vivendi-tinted t)
 ;; (load-theme 'doom-winter-is-coming-dark-blue t)
 (load-file custom-file)
+(setq inhibit-startup-screen t)
 (adam/goto-homepage)
 
 (provide 'init)

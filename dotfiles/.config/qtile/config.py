@@ -131,7 +131,7 @@ screens = [
         ),
         bottom=bar.Bar(
             [
-                widget.CurrentLayoutIcon(),
+                widget.CurrentLayout(icon_first=True),
                 widget.GroupBox(highlight_method='text'),
                 widget.Spacer(),
 

@@ -1,0 +1,4 @@
+#!/bin/sh
+
+mkdir ~/trash/ 2> /dev/null
+sudo rm -fr ~/trash/*
