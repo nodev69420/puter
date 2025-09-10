@@ -1,5 +1,0 @@
-#!/bin/sh
-
-source ~/.virtualenvs/puter/bin/activate 
-
-startx

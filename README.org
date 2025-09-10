@@ -1,31 +1,26 @@
-* Portable Puter
-Contains config contents and a collection of other computer conservables to cache.
+* PORTABLE PUTER
+contains config contents and a collection of other computer conservables to cache.
 
-** Configs
-- Alacritty
-- Bash
-- Emac
-- GDB
-- Git
-- GTK 2.0
-- GTK 3.0
-- i3 Config
-- i3 Status
-- Picom
-- QTile
-- Rofi
-- SBCL
-- Xinitrc
+** CONFIGS
+- alacritty
+- bash
+- emac
+- gdb
+- git
+- gtk 2.0
+- gtk 3.0
+- i3 config
+- i3 status
+- picom
+- qtile
+- rofi
+- xinitrc
 
-** Additional Items
-- Wallpapers
-- Scriptz
+** ADDITIONAL ITEMS
+- wallpapers
+- scriptz
 
-** Fonts Used
-- IosevkaNerdFont
-- TerminessNerdFont
-- JetBrainsNerdFont
-
-** Resources
-- [[https://www.nerdfonts.com]]
-- https://github.com/supermariofps/hatsune-miku-windows-linux-cursors
+** FONTS USED
+- iosevka-nerd-font
+- terminess-nerd-font
+- jetbrains-nerd-font

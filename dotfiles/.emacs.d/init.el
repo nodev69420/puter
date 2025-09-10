@@ -27,6 +27,7 @@
 (setq mouse-autoselect-window t)
 (setq focus-follows-mouse t)
 (global-hl-line-mode)
+(global-visual-line-mode)
 
 (display-line-numbers-mode 1)
 (setq display-line-numbers-type 'relative)
@@ -185,18 +186,25 @@
 
 ;; * PACMAN
 
-(require 'package)
-(setq package-archives
-      '(("melpa" . "https://melpa.org/packages/")
-        ("org" . "https://orgmode.org/elpa/")
-        ("elpa" . "https://elpa.gnu.org/packages/")))
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name
+        "straight/repos/straight.el/bootstrap.el"
+        (or (bound-and-true-p straight-base-dir)
+            user-emacs-directory)))
+      (bootstrap-version 7))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
 
-(package-initialize)
-(unless package-archive-contents
-  (package-install 'use-package))
-(require 'use-package)
+(straight-use-package 'use-package)
 
-(setq use-package-always-ensure t)
+(setq straight-use-package-by-default t)
 
 ;; * EMAC
 
@@ -206,12 +214,13 @@
   (defun adam/elisp-setup ()
     "custom elisp setup."
     (setq-local imenu-generic-expression
-                '(("functions" "^\\s-*(defun\\s-+\\([^[:space:]]+\\)" 1)
-                  ("variables" "^\\s-*(defvar\\s-+\\([^[:space:]]+\\)" 1)
-                  ("macros" "^\\s-*(defmacro\\s-+\\([^[:space:]]+\\)" 1)
+                '(("function" "^\\s-*(defun\\s-+\\([^[:space:]]+\\)" 1)
+                  ("variable" "^\\s-*(defvar\\s-+\\([^[:space:]]+\\)" 1)
+                  ("macro" "^\\s-*(defmacro\\s-+\\([^[:space:]]+\\)" 1)
                   ("require" "^\\s-*(require\\s-+\\([^[:space:]]+\\)" 1)
-                  ("packages" "^\\s-*(use-package\\s-+\\([^[:space:]]+\\)" 1)))
-    ))
+                  ("package" "^\\s-*(use-package\\s-+\\([^[:space:]]+\\)" 1)))))
+
+
 
 (use-package counsel
   :init
@@ -421,8 +430,7 @@
 ;; * DIRED
 
 (use-package dired
-  :ensure
-  nil
+  :straight nil
   :commands (dired dired-jump)
   :bind
   (("C-x C-j" . dired-jump))
@@ -448,7 +456,8 @@
           ("mp4" . "mpv")
           ("webm" . "mpv")
           ("xcf" . "gimp")
-          ("pdf" . "firefox")
+          ("kra" . "krita")
+          ("pdf" . "xreader")
           ("epub" . "xreader")
           ("blend" . "blender"))))
 
@@ -502,7 +511,7 @@
   (setq emms-info-functions '(emms-info-native))
   :config
   (setq-default emms-source-file-default-directory "~/Music/")
-  (setq-default emms-volume-change-function 'emms-volume-pulse-change))
+  (setq-default emms-volume-change-function 'emms-volume-mpv-change))
 
 (use-package gptel
   :config
@@ -540,8 +549,6 @@
 
 (use-package sly-asdf)
 (use-package sly-quicklisp)
-
-(use-package geiser-guile)
 
 (use-package clojure-mode)
 (use-package cider)
@@ -583,16 +590,17 @@
 
 ;; * KIDDY SCRIPTING LANGUAGES
 
-(use-package python-mode)
-
 (use-package lua-mode
   :config
   (add-hook 'lua-mode-hook 'lsp-mode)
   (define-key lua-mode-map (kbd "<normal-state> K") nil))
 
-(use-package fennel-mode
+(use-package gdscript-mode
   :config
-  (add-hook 'fennel-mode-hook 'lsp-mode))
+  (add-hook 'gdscript-mode-hook 'lsp-mode)
+  (setq gdscript-godot-executable "/bin/godot/godot")
+  (setq gdscript-use-tab-indents t)
+  (setq gdscript-gdformat-save-and-format nil))
 
 ;; * SHADERS
 
@@ -644,7 +652,7 @@
     "m" '(:ignore t :wk "music")
     "mm" '(emms :wk "music")
     "mp" '(emms-pause :wk "music pause")
-    "mf" '(emms-add-playlist-file :wk "music play")
+    "mf" '(emms-play-directory :wk "music play")
 
     "e" '(:ignore t :wk "eval")
     "ee" '(eval-expression :wk "eval expression")
@@ -738,6 +746,46 @@
                             (kill-new
                              (file-name-directory (buffer-file-name)))))
             map))
+
+;; * EXWM
+
+(use-package exwm
+  :config
+  (setq exwm-workspace-number 5)
+
+  (setq exwm-input-prefix-keys
+        '(
+          ?\C-x
+          ?\C-u
+          ?\C-h
+          ?\M-x
+          ?\M-`
+          ?\M-&
+          ?\M-:
+          ?\C-\M-j
+          ?\C-\ ))
+
+  (define-key exwm-mode-map [?\C-q] 'exwm-input-send-next-key)
+
+  (setq exwm-input-global-keys
+        `(([?\s-r] . exwm-reset)
+
+          ([s-left] . windmove-left)
+          ([s-right] . windmove-right)
+          ([s-up] . windmove-up)
+          ([s-down] . windmove-down)
+
+          ([?\s-&] . (lambda (cmd)
+                       (interactive (list (read-shell-command "$ ")))
+                       (start-process-shell-command cmd nil cmd)))
+
+          ([?\s-w] . exwm-workspace-switch)
+
+          ,@(mapcar (lambda (i)
+                      `(,(kbd (format "s-%d" i)) . (lambda () (interactive) (exwm-workspace-switch-create ,i))))
+                    (number-sequence 0 9)))))
+
+(exwm-wm-mode)
 
 ;; * LAST
 
