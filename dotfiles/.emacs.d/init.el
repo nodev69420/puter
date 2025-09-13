@@ -12,7 +12,7 @@
 (setq-default indent-tabs-mode nil)
 
 ;; transparency
-(set-frame-parameter nil 'alpha-background 90)
+;; (set-frame-parameter nil 'alpha-background 90)
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 (setq vc-follow-symlinks t)
@@ -80,8 +80,7 @@
 
 (defun adam/set-frame-default-params ()
   "set all frame params."
-  ;; (adam/set-font "JetBrainsMono Nerd Font Mono" 13)
-  (adam/set-font "Iosevka Nerd Font Mono" 13))
+  (adam/set-font "Iosevka Nerd Font Mono" 12))
 
 ;; Emacs daemon-mode doesn't load frame params correctly.
 (if (daemonp)
@@ -92,11 +91,6 @@
   (adam/set-frame-default-params))
 
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
-
-(defun adam/enable-fast-keys ()
-  "enable fast typing."
-  (interactive)
-  (shell-command-to-string "xset r rate 200 80"))
 
 (defun adam/goto-init-file ()
   "open init file."
@@ -162,6 +156,20 @@
         ((eq major-mode 'ibuffer-mode)
          (call-interactively #'adam/switch-buffer))
         (t (call-interactively #'adam/imenu))))
+
+(defun adam/xsettings ()
+  "call puter xsettings script."
+  (interactive)
+  (if (shell-command "xsettings")
+      (message "xsettings applied")
+      (message "xsettings failed to be applied. check that puter scriptz are in path")))
+
+(defun adam/puter-linkup ()
+  "relink all the puter based files."
+  (interactive)
+  (if (shell-command "~/puter/scriptz/puter-linkup")
+      (message "linked-up!")
+      (message "linked-up failed!")))
 
 (defvar adam/auth-file "~/adam/auth.json")
 
@@ -457,8 +465,8 @@
           ("webm" . "mpv")
           ("xcf" . "gimp")
           ("kra" . "krita")
-          ("pdf" . "xreader")
-          ("epub" . "xreader")
+          ("pdf" . "firefox")
+          ("epub" . "firefox")
           ("blend" . "blender"))))
 
 (use-package dired-hide-dotfiles
@@ -483,7 +491,7 @@
   :config
   (eshell-syntax-highlighting-global-mode 1))
 
-(use-package vterm)
+;; (use-package vterm)
 
 ;; * MISC
 
@@ -670,10 +678,6 @@
     "la" '(lsp-execute-code-action :wk "lsp code action")
     "ls" '(lsp-treemacs-symbols :wk "lsp symbols tab")
 
-    "p" '(:ignore t :wk "perspective")
-    "pp" '(persp-switch :wk "perspective switch")
-    "px" '(persp-kill :wk "perspective kill")
-
     "w" '(:ignore t :wk "window")
     "w1" '(delete-other-windows-internal :wk "window solo")
     "wn" '(evil-window-split :wk "window split horizontal")
@@ -702,6 +706,10 @@
                (setq compile-command "")
                (call-interactively #'compile))
            :wk "command new")
+
+    "x" '(:ignore t :wk "puter")
+    "xx" '(adam/xsettings :wk "puter xsettings")
+    "xl" '(adam/puter-linkup :wk "puter linkup")
 
     "r" '(:ignore t :wk "reload")
     "rc" '(adam/reload-init-file :wk "reload config")
@@ -785,7 +793,7 @@
                       `(,(kbd (format "s-%d" i)) . (lambda () (interactive) (exwm-workspace-switch-create ,i))))
                     (number-sequence 0 9)))))
 
-(exwm-wm-mode)
+;; (exwm-wm-mode)
 
 ;; * LAST
 
@@ -793,6 +801,7 @@
 ;; (load-theme 'doom-winter-is-coming-dark-blue t)
 (load-file custom-file)
 (setq inhibit-startup-screen t)
+(adam/xsettings)
 (adam/goto-homepage)
 
 (provide 'init)

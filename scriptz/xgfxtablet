@@ -1,5 +1,7 @@
 #!/bin/sh
 
-id=`xinput list --id-only "UGTABLET 10 inch PenTablet stylus"`
+# id=`xinput list --id-only "UGTABLET 10 inch PenTablet stylus"`
+
+id=`xinput list --id-only "UGTABLET 10 inch PenTablet Pen (0)"`
 
 xinput map-to-output $id HDMI-1
