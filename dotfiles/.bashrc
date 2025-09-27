@@ -1,8 +1,11 @@
+export _JAVA_AWT_WM_NONREPARENTING=1
+
 export XDG_CONFIG_HOME=${HOME}/.config
 export XDG_CACHE_HOME=${HOME}/.cache
 export XDG_DATA_HOME=${HOME}/.local/share
 export XDG_STATE_HOME=${HOME}/.local/state
 
+export PATH=${PATH}:~/bin
 export PATH=${PATH}:~/puter/scriptz
 export PATH=${PATH}:~/.cargo/bin
 export LSP_USE_PLISTS=true
@@ -12,6 +15,9 @@ export TERMINAL="alacritty"
 export BROWSER="firefox"
 export DOTNET_CLI_TELEMETRY_OPTOUT=1
 export LESSHISTFILE=".history"
+
+export GOPATH=$HOME/go
+export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin
 
 # export XCURSOR_THEME="miku-cursor-linux"
 # export XCURSOR_PATH=${XCURSOR_PATH}:~/.local/share/icons

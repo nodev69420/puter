@@ -2,7 +2,7 @@
 
 setxkbmap gb
 xset r rate 200 80
-# xset s off -dpms
+xset s off -dpms
 # xsetroot -cursor_name miku-cursor-linux
 
 xgfxtablet &
