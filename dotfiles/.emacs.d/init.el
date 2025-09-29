@@ -88,6 +88,8 @@
                   ("minor-mode" "^\\s-*(define-minor-mode\\s-+\\([^[:space:]]+\\)" 1)
                   ))))
 
+(use-package eglot)
+
 (use-package counsel
   :init
   (counsel-mode 1)
@@ -127,9 +129,8 @@
 
 
 (use-package ivy-rich
-  :after
-  ivy
-  :init (ivy-rich-mode 1))
+  :config
+  (add-hook 'after-init-hook (lambda () (ivy-rich-mode 1))))
 
 (use-package all-the-icons)
 ;; on first install call M-x all-the-icons-install-fonts
@@ -159,17 +160,15 @@
   (prog-mode . rainbow-delimiters-mode))
 
 (use-package company
-  :after
-  eglot-ensure
-  :hook (prog-mode . company-mode)
   :bind
   (:map company-active-map
         ("C-l" . company-complete-selection)
         ("<return>" . nil)
         ("RET" . nil))
-  :custom
-  (company-minimum-prefix-length 1)
-  (company-idle-delay 0.0))
+  :config
+  (setq company-minimum-prefix-length 0)
+  (setq company-idle-delay 0.0)
+  (add-hook 'after-init-hook (lambda () (global-company-mode 1))))
 
 (use-package doom-themes
   :config
@@ -240,37 +239,20 @@
   :bind
   ("C-;" . evilnc-comment-or-uncomment-lines))
 
-;; (use-package projectile
-;;   :config
-;;   (projectile-mode)
-;;   :custom ((projectile-completion-system 'ivy))
-;;   :bind-keymap
-;;   ("C-c p" . projectile-command-map)
-;;   :init
-;;   (when (file-directory-p "~/work")
-;;     (setq projectile-project-search-path '("~/work")))
-;;   (setq projectile-switch-project-action #'projectile-dired))
+(use-package projectile
+  :config
+  (projectile-mode)
+  :custom ((projectile-completion-system 'ivy))
+  :bind-keymap
+  ("C-c p" . projectile-command-map)
+  :init
+  (when (file-directory-p "~/work")
+    (setq projectile-project-search-path '("~/work")))
+  (setq projectile-switch-project-action #'projectile-dired))
 
-(use-package flycheck)
-
-(use-package eglot)
-
-;; (use-package lsp-mode
-;;   :init
-;;   (setq lsp-log-io nil)
-;;   (setq lsp-keymap-prefix "C-c l")
-;;   (setq lsp-headerline-breadcrumb-enable nil)
-;;   (setq lsp-enable-which-key-integration t)
-;;   :config
-;;   (setq lsp-clients-clangd-args '("--header-insertion=never")))
-
-;; (use-package lsp-ui
-;;   :config
-;;   (setq lsp-ui-doc-enable nil)
-;;   (setq lsp-ui-doc-show-with-cursor nil)
-;;   (setq lsp-ui-doc-show-with-mouse nil))
-
-;; (use-package lsp-ivy)
+(use-package flycheck
+  :config
+  (add-hook 'after-init-hook (lambda () (global-flycheck-mode 1))))
 
 (use-package yasnippet
   :config

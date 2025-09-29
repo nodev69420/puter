@@ -12,15 +12,14 @@ contains config contents and a collection of other computer conservables to cach
 - i3 config
 - i3 status
 - picom
-- qtile
 - rofi
 - xinitrc
 
 ** ADDITIONAL ITEMS
 - wallpapers
-- scriptz
 
 ** FONTS USED
-- iosevka-nerd-font
-- terminess-nerd-font
-- jetbrains-nerd-font
+- nerd fonts
+ - iosevka-nerd-font
+ - terminess-nerd-font
+ - jetbrains-nerd-font

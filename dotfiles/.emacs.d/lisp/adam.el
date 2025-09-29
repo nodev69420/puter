@@ -1,9 +1,20 @@
+;;; package -- Summary
+;;; Commentary:
+
+(require 'json)
+
+;;; Code:
 (defun adam/qoutize-string (str)
-  "surround a string STR in \"\" qoutes."
+  "Surround a string STR in \"\" qoutes."
   (concat "\"" str "\""))
 
+(defun adam/change-file-suffix (path new-suffix)
+  "Change the file path PATHs format suffix to NEW-SUFFIX."
+  (interactive)
+  (concat (car (string-split (car (last (string-split path "/"))) "\\.")) "." new-suffix))
+
 (defun adam/set-font (font-name font-size)
-  "set frame font FONT-NAME and size FONT-SIZE."
+  "Set frame font FONT-NAME and size FONT-SIZE."
   (let ((font-height (* font-size 10)))
     (set-face-attribute
      'default nil
@@ -21,7 +32,7 @@
      `(font . ,font-frame))))
 
 (defun adam/set-frame-default-params ()
-  "set all frame params."
+  "Set all frame params."
   (adam/set-font "Iosevka Nerd Font Mono" 12))
 
 ;; Emacs daemon-mode doesn't load frame params correctly.
@@ -35,52 +46,52 @@
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
 (defun adam/goto-init-file ()
-  "open init file."
+  "Open init file."
   (interactive)
   (find-file user-init-file))
 
 (defun adam/goto-homepage ()
-  "find main emacs page."
+  "Find main EMACS page."
   (interactive)
   (find-file "~/adam/master.org"))
 
 (defun adam/reload-init-file ()
-  "reload emacs config."
+  "Reload EMACS config."
   (interactive)
   (load-file user-init-file))
 
 (defun adam/switch-buffer ()
-  "switch to buffer command."
+  "Switch to buffer command."
   (interactive)
   (call-interactively #'counsel-switch-buffer))
 
 (defun adam/ibuffer ()
-  "interactive buffer menu."
+  "Interactive buffer menu."
   (interactive)
   (call-interactively #'ibuffer))
 
 (defun adam/find-file ()
-  "find file."
+  "Find file."
   (interactive)
   (call-interactively #'find-file-existing))
 
 (defun adam/find-file-new ()
-  "file file new."
+  "File file new."
   (interactive)
   (call-interactively #'counsel-find-file))
 
 (defun adam/imenu ()
-  "interactive menu."
+  "Interactive menu."
   (interactive)
   (call-interactively #'counsel-imenu))
 
 (defun adam/M-x ()
-  "meta x."
+  "Meta X."
   (interactive)
   (call-interactively #'counsel-M-x))
 
 (defun adam/lookup-func ()
-  "lookup symbol under cursor."
+  "Lookup symbol under cursor."
   (interactive)
   (cond ((eq major-mode 'emacs-lisp-mode)
          (call-interactively #'describe-symbol))
@@ -89,7 +100,7 @@
         (t (call-interactively #'man))))
 
 (defun adam/fuzzy-find ()
-  "fuzzy find based on the contents of the current buffer."
+  "Fuzzy find based on the contents of the current buffer."
   (interactive)
   (cond ((eq major-mode 'dired-mode)
          (call-interactively #'adam/find-file))
@@ -99,20 +110,35 @@
          (call-interactively #'adam/switch-buffer))
         (t (call-interactively #'adam/imenu))))
 
+(defvar adam/xgfxtablet-name "UGTABLET 10 inch PenTablet Pen (0)")
+
+(defun adam/xgfxtablet ()
+  "Set up gfxtablet for multi-monitor support."
+  (interactive)
+  (if-let ((x (shell-command-to-string (concat "xinput list --id-only" " " (adam/qoutize-string adam/xgfxtablet-name)))))
+      (let ((cmd (concat "xinput map-to-output" " " x " " "HDMI-1")))
+        (ignore-errors
+          (start-process-shell-command cmd nil cmd)
+          (message "XGFXtablet set up!")
+          ))
+    (message "XGFXtablet pen not yet registered!")))
 
 (defvar adam/xsettings-list
   '("setxkbmap gb"
     "xset r rate 200 80"
     "xset s off -dpms"
-    "xgfxtablet &"))
+    "xgfxtablet"
+    ;; "xrandr --output HDMI-1 --primary --output HDMI-2 --right-of HDMI-1"
+    ))
 
 (defun adam/xsettings ()
-  "call puter xsettings script."
+  "Call puter xsettings script."
   (interactive)
   (dolist (el adam/xsettings-list)
     (ignore-errors
       (start-process-shell-command el nil el)))
-  (message "xsettings applied"))
+  (adam/xgfxtablet)
+  (message "XSettings applied"))
 
 ;; (defun adam/set-wallpaper (pape &optional window-transparency)
 ;;   "Set the desktop wallpaper to a filepath PAPE."
@@ -124,30 +150,45 @@
 ;;       (message (concat "wallpaper failed to be set to: " pape))))
 
 
+(defun adam/tar-file (file-path &optional output-path)
+  "Use linux tar util to tar a file FILE-PATH and output to OUTPUT-PATH."
+  (interactive)
+  (let* ((output (or output-path (adam/change-file-suffix file-path "tar.gz")))
+         (cmd (concat "tar -cvf" " " file-path " " output)))
+    (start-process-shell-command cmd nil cmd)))
+
+(defun adam/untar-file (file-path)
+  "Use linux tar util to untar the compressed file FILE-PATH."
+  (interactive)
+  (let ((cmd (concat "tar -xvf" " " file-path)))
+    (start-process-shell-command cmd nil cmd)))
+
 (defun adam/puter-linkup ()
-  "relink all the puter based files."
+  "Relink all the puter based files."
   (interactive)
   (if (shell-command "~/puter/scriptz/puter-linkup")
-      (message "linked-up!")
-      (message "linked-up failed!")))
+      (message "Linked-up!")
+      (message "Linked-up failed!")))
 
-;; why do i have two versions of this function???
+;; Why do I have two versions of this function???
 
 (defun puter/linkup ()
+  "Puter linked up! sneed it or keep it?"
   (interactive)
   (if (shell-command "puter-linkup")
-      (message "linked up!")
-    (message "linkup failed!")))
+      (message "Linked up!")
+    (message "Linkup failed!")))
 
 (defvar adam/auth-file "~/adam/auth.json")
 
+
 (defun adam/lookup-auth (auth-sym)
-  "Fetch a given auth string from the auth-file with a given symbol: auth-sym."
+  "Fetch a given auth string from the auth-file with a given symbol: AUTH-SYM."
   (cdr (assoc auth-sym (json-read-file adam/auth-file))))
 
 (defun adam/display-startup-time ()
-  "display emacs starting time."
-  (message "emacs loaded in: %s, gc collects: %d."
+  "Display EMACS starting time."
+  (message "EMACS loaded in: %s, gc collects: %d."
            (format "%.2f seconds"
                    (float-time
                     (time-subtract after-init-time before-init-time)))
@@ -155,10 +196,11 @@
 (add-hook 'emacs-startup-hook #'adam/display-startup-time)
 
 (defun myeshell/clear ()
-  "clears the current eshell buffer."
+  "Clears the current eshell buffer."
   (interactive)
   (let ((inhibit-read-only t))
     (erase-buffer)))
 
 
 (provide 'adam)
+;;; adam.el ends here
