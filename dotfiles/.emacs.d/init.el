@@ -1,3 +1,8 @@
+;;; package --- Summary
+;;; Commentary:
+;;: note: on first install call M-x all-the-icons-install-fonts
+;;; Code:
+
 (setq custom-file "~/.emacs.d/custom.el")
 (scroll-bar-mode -1)
 (tool-bar-mode -1)
@@ -27,7 +32,7 @@
 (global-visual-line-mode)
 
 (display-line-numbers-mode 1)
-(setq display-line-numbers-type 'relative)
+(setq-default display-line-numbers-type 'relative)
 (setq browse-url-browser-function #'browse-url-firefox)
 
 (setq debug-on-error t)
@@ -88,8 +93,6 @@
                   ("minor-mode" "^\\s-*(define-minor-mode\\s-+\\([^[:space:]]+\\)" 1)
                   ))))
 
-(use-package eglot)
-
 (use-package counsel
   :init
   (counsel-mode 1)
@@ -129,8 +132,7 @@
 
 
 (use-package ivy-rich
-  :config
-  (add-hook 'after-init-hook (lambda () (ivy-rich-mode 1))))
+  :after ivy)
 
 (use-package all-the-icons)
 ;; on first install call M-x all-the-icons-install-fonts
@@ -168,7 +170,7 @@
   :config
   (setq company-minimum-prefix-length 0)
   (setq company-idle-delay 0.0)
-  (add-hook 'after-init-hook (lambda () (global-company-mode 1))))
+  (global-company-mode 1))
 
 (use-package doom-themes
   :config
@@ -252,7 +254,24 @@
 
 (use-package flycheck
   :config
-  (add-hook 'after-init-hook (lambda () (global-flycheck-mode 1))))
+  (global-flycheck-mode 1))
+
+(use-package lsp-mode
+  :init
+  (setq lsp-log-io nil)
+  (setq lsp-keymap-prefix "C-c l")
+  (setq lsp-headerline-breadcrumb-enable nil)
+  (setq lsp-enable-which-key-integration t)
+  :config
+  (setq lsp-clients-clangd-args '("--header-insertion=never")))
+
+(use-package lsp-ui
+  :config
+  (setq lsp-ui-doc-enable nil)
+  (setq lsp-ui-doc-show-with-cursor nil)
+  (setq lsp-ui-doc-show-with-mouse nil))
+
+(use-package lsp-ivy)
 
 (use-package yasnippet
   :config
@@ -357,7 +376,7 @@
   :config
   (add-hook 'js-mode-hook 'js2-minor-mode)
   (add-hook 'js2-mode-hook 'ac-js2-mode)
-  (add-hook 'js-mode-hook 'eglot-ensure))
+  (add-hook 'js-mode-hook 'lsp-mode))
 
 (use-package org
   :config
@@ -375,8 +394,8 @@
 (use-package cider)
 
 (use-package cc-mode
-  :hook ((c-mode . eglot-ensure)
-         (c++-mode . eglot-ensure))
+  :hook ((c-mode . lsp-mode)
+         (c++-mode . lsp-mode))
   :config
   (c-add-style
    "adam"
@@ -395,26 +414,26 @@
 
 (use-package zig-mode
   :config
-  (add-hook 'zig-mode-hook 'eglot-ensure)
+  (add-hook 'zig-mode-hook 'lsp-mode)
   (add-hook 'zig-mode-hook
             #'(lambda ()(interactive)(zig-format-on-save-mode -1))))
 
 (use-package rust-mode
   :config
-  (add-hook 'rust-mode-hook 'eglot-ensure))
+  (add-hook 'rust-mode-hook 'lsp-mode))
 
 (use-package go-mode
   :config
-  (add-hook 'go-mode-hook 'eglot-ensure))
+  (add-hook 'go-mode-hook 'lsp-mode))
 
 (use-package lua-mode
   :config
-  (add-hook 'lua-mode-hook 'eglot-ensure)
+  (add-hook 'lua-mode-hook 'lsp-mode)
   (define-key lua-mode-map (kbd "<normal-state> K") nil))
 
 (use-package gdscript-mode
   :config
-  (add-hook 'gdscript-mode-hook 'eglot-ensure)
+  (add-hook 'gdscript-mode-hook 'lsp-mode)
   (setq gdscript-godot-executable "/bin/godot/godot")
   (setq gdscript-use-tab-indents t)
   (setq gdscript-gdformat-save-and-format nil))
@@ -473,9 +492,9 @@
     ;; "hv" '(counsel-describe-variable :wk "help variable")
 
     "l" '(:ignore t :wk "lsp")
-    "lr" '(eglot-rename :wk "lsp rename")
+    "lr" '(lsp-rename :wk "lsp rename")
     "ld" '(flycheck-list-errors :wk "lsp errors")
-    "la" '(eglot-code-actions :wk "lsp code action")
+    "la" '(lsp-code-actions-at-point :wk "lsp code action")
 
     "w" '(:ignore t :wk "window")
     "w1" '(delete-other-windows-internal :wk "window solo")
@@ -527,3 +546,4 @@
 (adam/goto-homepage)
 
 (provide 'init)
+;;; init.el ends here

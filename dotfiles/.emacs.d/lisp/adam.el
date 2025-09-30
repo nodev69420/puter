@@ -149,18 +149,22 @@
 ;;       (message (concat "wallpaper set: " pape))
 ;;       (message (concat "wallpaper failed to be set to: " pape))))
 
-
 (defun adam/tar-file (file-path &optional output-path)
   "Use linux tar util to tar a file FILE-PATH and output to OUTPUT-PATH."
   (interactive)
-  (let* ((output (or output-path (adam/change-file-suffix file-path "tar.gz")))
-         (cmd (concat "tar -cvf" " " file-path " " output)))
+  (let* ((output (or output-path (concat "./" (adam/change-file-suffix file-path "tar.gz"))))
+         (cmd (concat "tar -cvf" " " output " " file-path)))
     (start-process-shell-command cmd nil cmd)))
 
 (defun adam/untar-file (file-path)
   "Use linux tar util to untar the compressed file FILE-PATH."
   (interactive)
   (let ((cmd (concat "tar -xvf" " " file-path)))
+    (start-process-shell-command cmd nil cmd)))
+
+(defun adam/yt-music (url)
+  "Use commandline util yt-dlp to download a youtube link URL as a mp3 file."
+  (let ((cmd (concat "yt-dlp -f bestaudio -x --audio-format mp3 --audio-quality 330k" " " url)))
     (start-process-shell-command cmd nil cmd)))
 
 (defun adam/puter-linkup ()

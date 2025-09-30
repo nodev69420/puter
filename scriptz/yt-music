@@ -1,8 +1,0 @@
-#!/bin/sh
-
-if [ "$#" -ne 1 ]; then
-    echo "usage: $0 <youtube-link>"
-    exit 1
-fi
-
-yt-dlp -f bestaudio -x --audio-format mp3 --audio-quality 330k $1
