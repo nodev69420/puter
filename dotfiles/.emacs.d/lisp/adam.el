@@ -1,9 +1,10 @@
 ;;; package -- Summary
 ;;; Commentary:
 
+;;; Code:
+
 (require 'json)
 
-;;; Code:
 (defun adam/qoutize-string (str)
   "Surround a string STR in \"\" qoutes."
   (concat "\"" str "\""))
@@ -115,12 +116,11 @@
 (defun adam/xgfxtablet ()
   "Set up gfxtablet for multi-monitor support."
   (interactive)
-  (if-let ((x (shell-command-to-string (concat "xinput list --id-only" " " (adam/qoutize-string adam/xgfxtablet-name)))))
+  (if-let ((x (string-chop-newline (shell-command-to-string (concat "xinput list --id-only" " " (adam/qoutize-string adam/xgfxtablet-name))))))
       (let ((cmd (concat "xinput map-to-output" " " x " " "HDMI-1")))
         (ignore-errors
           (start-process-shell-command cmd nil cmd)
-          (message "XGFXtablet set up!")
-          ))
+          (message "XGFXtablet set up!")))
     (message "XGFXtablet pen not yet registered!")))
 
 (defvar adam/xsettings-list

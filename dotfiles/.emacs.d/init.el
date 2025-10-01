@@ -540,7 +540,8 @@
 
 (load-theme 'modus-vivendi-tinted t)
 ;; (load-theme 'doom-winter-is-coming-dark-blue t)
-(set-frame-parameter nil 'alpha-background 90)
+;; (set-frame-parameter nil 'alpha-background 90)
+;; (load-theme 'doom-homage-black t)
 (load-file custom-file)
 (setq inhibit-startup-screen t)
 (adam/goto-homepage)
